@@ -1,90 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord & YouTube</title>
+    <title>Welkom op Mijn Website</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #f0f0f0;
         }
 
         header {
-            background-color: #7289da;
-            color: #fff;
-            padding: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px;
             text-align: center;
         }
 
-        main {
-            max-width: 800px;
-            margin: 20px auto;
+        section {
             padding: 20px;
+            margin: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
+        .login-section {
+            max-width: 400px;
+            margin: 0 auto;
         }
 
-        p {
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .discord-container, .youtube-container {
-            margin-top: 20px;
+        .promo-section {
             text-align: center;
-        }
-
-        .discord-container img, .youtube-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-
-        a {
-            color: #7289da;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease-in-out;
-        }
-
-        a:hover {
-            color: #546e7a;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Welkom op mijn website</h1>
+        <h1>Mijn Video Programma</h1>
     </header>
 
-    <main>
-        <p>Hier kun je meer te weten komen over mijn Discord-community en mijn YouTube-kanaal.</p>
+    <section class="login-section">
+        <h2>Inloggen</h2>
+        <form action="/login" method="post">
+            <!-- Voeg hier je inlogformulier toe -->
+            <label for="gebruikersnaam">Gebruikersnaam:</label>
+            <input type="text" id="gebruikersnaam" name="gebruikersnaam" required><br>
 
-        <div class="discord-container">
-            <h2>Mijn Discord</h2>
-            <p>Word lid van mijn Discord-community om in contact te komen met andere leden en om op de hoogte te blijven van updates.</p>
-            <a href="https://discord.gg/PnbXgGwZ3J" target="_blank"><img src="discord-logo.png" alt="Discord Logo"></a>
-        </div>
+            <label for="wachtwoord">Wachtwoord:</label>
+            <input type="password" id="wachtwoord" name="wachtwoord" required><br>
 
-        <div class="youtube-container">
-            <h2>Mijn YouTube</h2>
-            <p>Bekijk mijn nieuwste video's op YouTube en abonneer je op mijn kanaal voor meer content.</p>
-            <a href="https://www.youtube.com/channel/UC-W-JHn99vpkLj8lpmhFc8Q" target="_blank"><img src="youtube-logo.png" alt="YouTube Logo"></a>
-        </div>
-    </main>
+            <input type="submit" value="Inloggen">
+        </form>
+    </section>
+
+    <section class="promo-section">
+        <h2>Volg Ons Op Discord En YouTube</h2>
+        <!-- Voeg hier je Discord-widget of link toe -->
+        <p>Discord: <a href="https://discord.gg/ZVMepb2qSM" target="_blank">Discord Server</a></p>
+
+        <!-- Voeg hier je YouTube-promotie-inhoud toe -->
+        <p>YouTube: <a href="https://www.youtube.com/channel/UC-W-JHn99vpkLj8lpmhFc8Q" target="_blank">YouTube Kanaal</a></p>
+    </section>
 </body>
 </html>
+
 
 
 
