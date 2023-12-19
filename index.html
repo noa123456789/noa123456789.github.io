@@ -3,20 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Discord & YouTube</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .discord-container, .youtube-container {
+            margin-top: 20px;
+        }
+
+        .discord-container img, .youtube-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    <form id="login-form">
-        <label for="username">Gebruikersnaam:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Wachtwoord:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="button" onclick="login()">Inloggen</button>
-    </form>
+    <header>
+        <h1>Welkom op mijn Discord & YouTube</h1>
+    </header>
 
-    <script src="script.js"></script>
+    <main>
+        <p>Hier kun je meer te weten komen over mijn Discord-community en mijn YouTube-kanaal.</p>
+
+        <div class="discord-container">
+            <h2>Mijn Discord</h2>
+            <p>Word lid van mijn Discord-community om in contact te komen met andere leden en om op de hoogte te blijven van updates.</p>
+            <a href="https://discord.gg/your-discord-invite" target="_blank"><img src="discord-logo.png" alt="Discord Logo"></a>
+        </div>
+
+        <div class="youtube-container">
+            <h2>Mijn YouTube</h2>
+            <p>Bekijk mijn nieuwste video's op YouTube en abonneer je op mijn kanaal voor meer content.</p>
+            <a href="https://www.youtube.com/your-youtube-channel" target="_blank"><img src="youtube-logo.png" alt="YouTube Logo"></a>
+        </div>
+    </main>
 </body>
 </html>
+
 
