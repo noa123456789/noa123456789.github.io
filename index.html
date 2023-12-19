@@ -3,69 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welkom op Mijn Website</title>
+    <title>Jouw Website</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
         }
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-
-        section {
-            padding: 20px;
-            margin: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-section {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .promo-section {
-            text-align: center;
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none; /* Verwijder de iframe-rand */
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Mijn Video Programma</h1>
-    </header>
-
-    <section class="login-section">
-        <h2>Inloggen</h2>
-        <form action="/login" method="post">
-            <!-- Voeg hier je inlogformulier toe -->
-            <label for="gebruikersnaam">Gebruikersnaam:</label>
-            <input type="text" id="gebruikersnaam" name="gebruikersnaam" required><br>
-
-            <label for="wachtwoord">Wachtwoord:</label>
-            <input type="password" id="wachtwoord" name="wachtwoord" required><br>
-
-            <input type="submit" value="Inloggen">
-        </form>
-    </section>
-
-    <section class="promo-section">
-        <h2>Volg Ons Op Discord En YouTube</h2>
-        <!-- Voeg hier je Discord-widget of link toe -->
-        <p>Discord: <a href="https://discord.gg/ZVMepb2qSM" target="_blank">Discord Server</a></p>
-
-        <!-- Voeg hier je YouTube-promotie-inhoud toe -->
-        <p>YouTube: <a href="https://www.youtube.com/channel/UC-W-JHn99vpkLj8lpmhFc8Q" target="_blank">YouTube Kanaal</a></p>
-    </section>
+    <!-- Vervang "https://www.andere-website.com" door de URL van de website die je wilt insluiten -->
+    <iframe src="https://www.primevideo.com/region/eu/storefront?contentId=IncludedwithPrime&contentType=merch&merchId=IncludedwithPrime" frameborder="0" allowfullscreen></iframe>
 </body>
 </html>
+
 
 
 
