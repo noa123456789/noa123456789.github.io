@@ -1,86 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Online Winkel</title>
-  <style>
-    /* Voeg hier je opmaakstijlen toe */
-    body {
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .tabs {
-      display: flex;
-      margin-top: 20px;
-    }
-
-    .tab {
-      flex: 1;
-      text-align: center;
-      padding: 10px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    .tab-content {
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webshop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+        section {
+            margin: 20px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Welkom in onze online winkel!</h1>
+    <header>
+        <h1>Welkom bij de Webshop</h1>
+        <p>Contact: jouw@email.com</p>
+    </header>
 
-  <!-- Koopsectie -->
-  <section id="buy-section">
-    <h2>Onze Producten</h2>
-    <p>Hier kun je verschillende dingen kopen.</p>
-    <!-- Voeg hier je producten toe -->
-  </section>
+    <section>
+        <h2>Producten</h2>
+        <div>
+            <h3>Product 1</h3>
+            <p>Beschrijving van product 1.</p>
+            <button>Koop nu</button>
+        </div>
+        <div>
+            <h3>Product 2</h3>
+            <p>Beschrijving van product 2.</p>
+            <button>Koop nu</button>
+        </div>
+        <!-- Voeg meer producten toe zoals hierboven -->
+    </section>
 
-  <!-- Tabbladen -->
-  <div class="tabs">
-    <div class="tab" onclick="openTab('youtube')">YouTube</div>
-    <div class="tab" onclick="openTab('discord')">Discord</div>
-    <div class="tab" onclick="openTab('tiktok')">TikTok</div>
-  </div>
+    <section>
+        <h2>Contacteer ons</h2>
+        <p>Heb je vragen of opmerkingen? Neem contact met ons op:</p>
+        <form>
+            <label for="naam">Naam:</label>
+            <input type="text" id="naam" name="naam" required><br>
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required><br>
+            <label for="bericht">Bericht:</label><br>
+            <textarea id="bericht" name="bericht" rows="4" required></textarea><br>
+            <button type="submit">Verstuur</button>
+        </form>
+    </section>
 
-  <!-- Tab-inhoud -->
-  <div id="youtube" class="tab-content">
-    <h2>YouTube</h2>
-    <p>Bezoek ons YouTube-kanaal <a href="https://youtube.com/@GroteKleuter?si=IYlNbpg4rDtUqDQg" target="_blank">hier</a>.</p>
-  </div>
-
-  <div id="discord" class="tab-content">
-    <h2>Discord</h2>
-    <p>Word lid van onze Discord-server <a href="https://discord.com/invite/mTwtFE2hd9" target="_blank">hier</a>.</p>
-  </div>
-
-  <div id="tiktok" class="tab-content">
-    <h2>TikTok</h2>
-    <p>Volg ons op TikTok <a href="https://www.tiktok.com/@grotekleuter?_t=8iOfn4BOnbs&_r=1" target="_blank">hier</a>.</p>
-  </div>
-</div>
-
-<script>
-  function openTab(tabId) {
-    // Verberg alle tab-inhoud
-    var tabs = document.getElementsByClassName("tab-content");
-    for (var i = 0; i < tabs.length; i++) {
-      tabs[i].style.display = "none";
-    }
-
-    // Toon de geselecteerde tab-inhoud
-    document.getElementById(tabId).style.display = "block";
-  }
-</script>
+    <footer>
+        <p>&copy; 2023 Webshop. Alle rechten voorbehouden.</p>
+    </footer>
 
 </body>
 </html>
