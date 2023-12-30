@@ -126,65 +126,42 @@
     };
 
     increaseVisitorCount();
-</script>
+
 
 <!-- Voeg hier je andere scripts toe -->
         }
 
-        #menu {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            padding-top: 50px;
-            transition: 0.3s;
+        #score {
+            font-size: 36px;
+            margin-top: 50px;
         }
 
-        #menu a {
-            display: block;
-            color: #fff;
-            padding: 15px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        #menu a:hover {
-            background-color: #555;
-        }
-
-        #menu-btn {
+        #clicker-btn {
             font-size: 24px;
             cursor: pointer;
             padding: 15px;
             background-color: #333;
             color: #fff;
             border: none;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <button id="menu-btn">&#8286;&#8286;&#8286;</button>
-
-    <div id="menu">
-        <a href="#">Menu Item 1</a>
-        <a href="#">Menu Item 2</a>
-        <a href="#">Menu Item 3</a>
-    </div>
+    <h1>Clicker Game</h1>
+    <p id="score">Score: 0</p>
+    <button id="clicker-btn">Klik hier!</button>
 
     <script>
-        document.getElementById("menu-btn").addEventListener("click", function() {
-            const menu = document.getElementById("menu");
-            const menuWidth = menu.offsetWidth;
-            const isOpen = menu.style.left === "0px";
+        let score = 0;
 
-            menu.style.left = isOpen ? `-${menuWidth}px` : "0";
+        document.getElementById("clicker-btn").addEventListener("click", function() {
+            score++;
+            document.getElementById("score").innerText = "Score: " + score;
         });
     </script>
-<!-- Voeg hier je andere scripts toe -->
-<!-- Voeg hier je andere scripts toe -->
+
     
 </body>
 </html>
