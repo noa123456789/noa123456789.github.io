@@ -130,219 +130,70 @@
 
 <!-- Voeg hier je andere scripts toe -->
 
-    <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Auto Game met Highscore</title>
+    <title>Voice Chatbot</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-            background-color: #87CEEB;
-            position: relative;
+            font-family: Arial, sans-serif;
         }
 
-        #car {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 100px;
-            background-color: #ff0000;
-        }
-
-        .obstacle {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-color: #00ff00;
-        }
-
-        #score {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 20px;
-            color: #fff;
-        }
-
-        #highscore {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            color: #fff;
-        }
-
-        #leaderboard {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 16px;
-            color: #fff;
-        }
-
-        #start-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 15px;
-            background-color: #333;
-            color: #fff;
-            border: none;
+        #output {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-
-    <div id="car"></div>
-    <div id="score">Score: 0</div>
-    <div id="highscore">Highscore: 0</div>
-    <div id="leaderboard">Leaderboard:</div>
-    <button id="start-btn">Start</button>
+    <h1>Voice Chatbot</h1>
+    <div id="output"></div>
 
     <script>
-        const car = document.getElementById("car");
-        const scoreElement = document.getElementById("score");
-        const highscoreElement = document.getElementById("highscore");
-        const leaderboardElement = document.getElementById("leaderboard");
-        const startButton = document.getElementById("start-btn");
-        const obstacles = [];
-        let carPosition = 50;
-        let score = 0;
-        let highscore = 0;
-        let gameStarted = false;
-        const maxObstacles = 20;
+        const outputDiv = document.getElementById("output");
 
-        function loadLeaderboard() {
-            const leaderboardData = JSON.parse(localStorage.getItem("leaderboard")) || [];
-            leaderboardData.forEach(entry => {
-                const leaderboardEntry = document.createElement("div");
-                leaderboardEntry.innerText = entry.name + ": " + entry.score;
-                leaderboardElement.appendChild(leaderboardEntry);
-            });
+        function startSpeechRecognition() {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onresult = function(event) {
+                const result = event.results[event.results.length - 1];
+                const transcript = result[0].transcript.trim();
+                outputDiv.innerText = `Jij: ${transcript}`;
+                respondToText(transcript);
+            };
+
+            recognition.onend = function() {
+                startSpeechRecognition();
+            };
+
+            recognition.start();
         }
 
-        function saveLeaderboard(playerName) {
-            const leaderboardData = JSON.parse(localStorage.getItem("leaderboard")) || [];
-            leaderboardData.push({ name: playerName, score });
-            localStorage.setItem("leaderboard", JSON.stringify(leaderboardData));
+        function respondToText(text) {
+            // Hier kun je je eigen logica toevoegen om te reageren op de herkende tekst
+            const response = "hallo";
+            outputDiv.innerText = `${outputDiv.innerText}\nAI: ${response}`;
+            speak(response);
         }
 
-        function updateScore() {
-            score++;
-            scoreElement.innerText = "Score: " + score;
-
-            if (score > highscore) {
-                highscore = score;
-                highscoreElement.innerText = "Highscore: " + highscore;
-            }
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(text);
+            synth.speak(utterance);
         }
 
-        function updateLeaderboard(playerName) {
-            const leaderboardEntry = document.createElement("div");
-            leaderboardEntry.innerText = playerName + ": " + score;
-            leaderboardElement.appendChild(leaderboardEntry);
-            saveLeaderboard(playerName);
-        }
-
-        function createObstacle() {
-            const obstacle = document.createElement("div");
-            obstacle.className = "obstacle";
-            obstacle.style.left = Math.random() * (window.innerWidth - 50) + "px";
-            obstacle.style.bottom = window.innerHeight + "px";
-            document.body.appendChild(obstacle);
-            obstacles.push(obstacle);
-        }
-
-        function addMoreObstacles() {
-            if (obstacles.length < maxObstacles) {
-                createObstacle();
-            }
-        }
-
-        function moveObstacles() {
-            if (!gameStarted) return;
-
-            obstacles.forEach(function(obstacle) {
-                const obstacleBottom = parseFloat(obstacle.style.bottom) || 0;
-                obstacle.style.bottom = obstacleBottom - 5 + "px";
-
-                if (obstacleBottom < -50) {
-                    obstacle.remove();
-                    createObstacle();
-                    updateScore();
-                }
-
-                const carRect = car.getBoundingClientRect();
-                const obstacleRect = obstacle.getBoundingClientRect();
-
-                if (
-                    carRect.bottom > obstacleRect.top &&
-                    carRect.top < obstacleRect.bottom &&
-                    carRect.left < obstacleRect.right &&
-                    carRect.right > obstacleRect.left
-                ) {
-                    endGame();
-                }
-            });
-        }
-
-        function endGame() {
-            const playerName = prompt("Game Over! Enter your name for the highscore:");
-            if (playerName) {
-                alert(playerName + "'s Score: " + score);
-                updateLeaderboard(playerName);
-                resetGame();
-            } else {
-                resetGame();
-            }
-        }
-
-        function resetGame() {
-            score = 0;
-            scoreElement.innerText = "Score: 0";
-            obstacles.forEach(obstacle => obstacle.remove());
-            obstacles.length = 0;
-            gameStarted = false;
-            startButton.style.display = "block";
-        }
-
-        document.addEventListener("keydown", function(event) {
-            if (!gameStarted) return;
-
-            if (event.code === "ArrowLeft" && carPosition > 0) {
-                carPosition -= 10;
-            } else if (event.code === "ArrowRight" && carPosition < window.innerWidth - 50) {
-                carPosition += 10;
-            }
-
-            car.style.left = carPosition + "px";
-        });
-
-        startButton.addEventListener("click", function() {
-            startButton.style.display = "none";
-            gameStarted = true;
-            createObstacle();
-            setInterval(addMoreObstacles, 5);
-        });
-
-        setInterval(moveObstacles, 30);
-        loadLeaderboard();
+        startSpeechRecognition();
     </script>
-
 </body>
 </html>
-
 
     
 </body>
