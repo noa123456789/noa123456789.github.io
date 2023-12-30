@@ -178,6 +178,19 @@
             font-size: 20px;
             color: #fff;
         }
+
+        #start-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 15px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -185,15 +198,18 @@
     <div id="car"></div>
     <div id="score">Score: 0</div>
     <div id="highscore">Highscore: 0</div>
+    <button id="start-btn">Start</button>
 
     <script>
         const car = document.getElementById("car");
         const scoreElement = document.getElementById("score");
         const highscoreElement = document.getElementById("highscore");
+        const startButton = document.getElementById("start-btn");
         const obstacles = [];
         let carPosition = 50;
         let score = 0;
         let highscore = 0;
+        let gameStarted = false;
 
         function updateScore() {
             score++;
@@ -214,6 +230,8 @@
         }
 
         function moveObstacles() {
+            if (!gameStarted) return;
+
             obstacles.forEach(function(obstacle) {
                 const obstacleBottom = parseFloat(obstacle.style.bottom) || 0;
                 obstacle.style.bottom = obstacleBottom - 5 + "px";
@@ -253,9 +271,13 @@
             scoreElement.innerText = "Score: 0";
             obstacles.forEach(obstacle => obstacle.remove());
             obstacles.length = 0;
+            gameStarted = false;
+            startButton.style.display = "block";
         }
 
         document.addEventListener("keydown", function(event) {
+            if (!gameStarted) return;
+
             if (event.code === "ArrowLeft" && carPosition > 0) {
                 carPosition -= 10;
             } else if (event.code === "ArrowRight" && carPosition < window.innerWidth - 50) {
@@ -265,12 +287,17 @@
             car.style.left = carPosition + "px";
         });
 
-        createObstacle();
+        startButton.addEventListener("click", function() {
+            startButton.style.display = "none";
+            gameStarted = true;
+        });
+
         setInterval(moveObstacles, 50);
     </script>
 
 </body>
 </html>
+
 
     
 </body>
