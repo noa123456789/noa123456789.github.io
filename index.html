@@ -135,46 +135,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game</title>
+    <title>Mini Auto Game met Highscore</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            text-align: center;
-            background-color: #f5f5f5;
+            overflow: hidden;
+            background-color: #87CEEB;
+        }
+
+        #car {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 100px;
+            background-color: #ff0000;
+        }
+
+        .obstacle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #00ff00;
         }
 
         #score {
-            font-size: 36px;
-            margin-top: 50px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            color: #fff;
         }
 
-        #clicker-btn {
-            font-size: 24px;
-            cursor: pointer;
-            padding: 15px;
-            background-color: #333;
+        #highscore {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
             color: #fff;
-            border: none;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Clicker Game</h1>
-    <p id="score">Score: 0</p>
-    <button id="clicker-btn">Klik hier!</button>
+    <div id="car"></div>
+    <div id="score">Score: 0</div>
+    <div id="highscore">Highscore: 0</div>
 
     <script>
+        const car = document.getElementById("car");
+        const scoreElement = document.getElementById("score");
+        const highscoreElement = document.getElementById("highscore");
+        const obstacles = [];
+        let carPosition = 50;
         let score = 0;
+        let highscore = 0;
 
-        document.getElementById("clicker-btn").addEventListener("click", function() {
+        function updateScore() {
             score++;
-            document.getElementById("score").innerText = "Score: " + score;
+            scoreElement.innerText = "Score: " + score;
+
+            if (score > highscore) {
+                highscore = score;
+                highscoreElement.innerText = "Highscore: " + highscore;
+            }
+        }
+
+        function createObstacle() {
+            const obstacle = document.createElement("div");
+            obstacle.className = "obstacle";
+            obstacle.style.left = Math.random() * (window.innerWidth - 50) + "px";
+            document.body.appendChild(obstacle);
+            obstacles.push(obstacle);
+        }
+
+        function moveObstacles() {
+            obstacles.forEach(function(obstacle) {
+                const obstacleBottom = parseFloat(obstacle.style.bottom) || 0;
+                obstacle.style.bottom = obstacleBottom - 5 + "px";
+
+                if (obstacleBottom < -50) {
+                    obstacle.remove();
+                    createObstacle();
+                    updateScore();
+                }
+
+                const carRect = car.getBoundingClientRect();
+                const obstacleRect = obstacle.getBoundingClientRect();
+
+                if (
+                    carRect.bottom > obstacleRect.top &&
+                    carRect.top < obstacleRect.bottom &&
+                    carRect.left < obstacleRect.right &&
+                    carRect.right > obstacleRect.left
+                ) {
+                    endGame();
+                }
+            });
+        }
+
+        function endGame() {
+            const playerName = prompt("Game Over! Enter your name for the highscore:");
+            if (playerName) {
+                alert(playerName + "'s Score: " + score);
+                resetGame();
+            } else {
+                resetGame();
+            }
+        }
+
+        function resetGame() {
+            score = 0;
+            scoreElement.innerText = "Score: 0";
+            obstacles.forEach(obstacle => obstacle.remove());
+            obstacles.length = 0;
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.code === "ArrowLeft" && carPosition > 0) {
+                carPosition -= 10;
+            } else if (event.code === "ArrowRight" && carPosition < window.innerWidth - 50) {
+                carPosition += 10;
+            }
+
+            car.style.left = carPosition + "px";
         });
+
+        createObstacle();
+        setInterval(moveObstacles, 50);
     </script>
 
 </body>
