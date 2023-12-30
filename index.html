@@ -144,6 +144,7 @@
             box-sizing: border-box;
             overflow: hidden;
             background-color: #87CEEB;
+            position: relative;
         }
 
         #car {
@@ -179,6 +180,14 @@
             color: #fff;
         }
 
+        #leaderboard {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+
         #start-btn {
             position: absolute;
             top: 50%;
@@ -198,12 +207,14 @@
     <div id="car"></div>
     <div id="score">Score: 0</div>
     <div id="highscore">Highscore: 0</div>
+    <div id="leaderboard">Leaderboard:</div>
     <button id="start-btn">Start</button>
 
     <script>
         const car = document.getElementById("car");
         const scoreElement = document.getElementById("score");
         const highscoreElement = document.getElementById("highscore");
+        const leaderboardElement = document.getElementById("leaderboard");
         const startButton = document.getElementById("start-btn");
         const obstacles = [];
         let carPosition = 50;
@@ -221,10 +232,17 @@
             }
         }
 
+        function updateLeaderboard(playerName) {
+            const leaderboardEntry = document.createElement("div");
+            leaderboardEntry.innerText = playerName + ": " + score;
+            leaderboardElement.appendChild(leaderboardEntry);
+        }
+
         function createObstacle() {
             const obstacle = document.createElement("div");
             obstacle.className = "obstacle";
             obstacle.style.left = Math.random() * (window.innerWidth - 50) + "px";
+            obstacle.style.bottom = window.innerHeight + "px"; // Start bovenaan het scherm
             document.body.appendChild(obstacle);
             obstacles.push(obstacle);
         }
@@ -260,6 +278,7 @@
             const playerName = prompt("Game Over! Enter your name for the highscore:");
             if (playerName) {
                 alert(playerName + "'s Score: " + score);
+                updateLeaderboard(playerName);
                 resetGame();
             } else {
                 resetGame();
@@ -290,6 +309,7 @@
         startButton.addEventListener("click", function() {
             startButton.style.display = "none";
             gameStarted = true;
+            createObstacle(); // Voeg het eerste obstakel toe wanneer het spel begint
         });
 
         setInterval(moveObstacles, 50);
@@ -297,6 +317,7 @@
 
 </body>
 </html>
+
 
 
     
