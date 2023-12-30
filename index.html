@@ -104,6 +104,37 @@
         <p>&copy; 2023 GroteKleuter.nl. Alle rechten voorbehouden.</p>
     </footer>
 
+<!-- Voeg hier eventuele stijlen toe -->
+<section id="counter">
+    <h2>Bezoekersaantal</h2>
+    <p id="visitor-count">0</p>
+</section>
+
+<script>
+    let visitorCount = 0;
+
+    function increaseVisitorCount() {
+        visitorCount++;
+        document.getElementById("visitor-count").innerText = visitorCount;
+        localStorage.setItem("visitorCount", visitorCount);
+    }
+
+    window.onload = function() {
+        let storedVisitorCount = localStorage.getItem("visitorCount");
+        if (storedVisitorCount) {
+            visitorCount = parseInt(storedVisitorCount);
+            document.getElementById("visitor-count").innerText = visitorCount;
+        }
+    };
+
+    increaseVisitorCount();
+</script>
+
+<!-- Voeg hier je andere scripts toe -->
+
+
+
+    
 </body>
 </html>
 
