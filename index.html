@@ -222,6 +222,23 @@
         let highscore = 0;
         let gameStarted = false;
 
+        // Functie om de leaderboard te laden uit de lokale opslag
+        function loadLeaderboard() {
+            const leaderboardData = JSON.parse(localStorage.getItem("leaderboard")) || [];
+            leaderboardData.forEach(entry => {
+                const leaderboardEntry = document.createElement("div");
+                leaderboardEntry.innerText = entry.name + ": " + entry.score;
+                leaderboardElement.appendChild(leaderboardEntry);
+            });
+        }
+
+        // Functie om de leaderboard op te slaan in de lokale opslag
+        function saveLeaderboard(playerName) {
+            const leaderboardData = JSON.parse(localStorage.getItem("leaderboard")) || [];
+            leaderboardData.push({ name: playerName, score });
+            localStorage.setItem("leaderboard", JSON.stringify(leaderboardData));
+        }
+
         function updateScore() {
             score++;
             scoreElement.innerText = "Score: " + score;
@@ -236,6 +253,7 @@
             const leaderboardEntry = document.createElement("div");
             leaderboardEntry.innerText = playerName + ": " + score;
             leaderboardElement.appendChild(leaderboardEntry);
+            saveLeaderboard(playerName);
         }
 
         function createObstacle() {
@@ -245,6 +263,13 @@
             obstacle.style.bottom = window.innerHeight + "px"; // Start bovenaan het scherm
             document.body.appendChild(obstacle);
             obstacles.push(obstacle);
+        }
+
+        // Functie om extra obstakels toe te voegen na een bepaalde tijd
+        function addMoreObstacles() {
+            for (let i = 0; i < 10; i++) {
+                createObstacle();
+            }
         }
 
         function moveObstacles() {
@@ -310,15 +335,15 @@
             startButton.style.display = "none";
             gameStarted = true;
             createObstacle(); // Voeg het eerste obstakel toe wanneer het spel begint
+            setTimeout(addMoreObstacles, 10000); // Voeg meer obstakels toe na 10 seconden
         });
 
         setInterval(moveObstacles, 50);
+        loadLeaderboard(); // Laad het leaderboard bij het starten van de pagina
     </script>
 
 </body>
 </html>
-
-
 
     
 </body>
