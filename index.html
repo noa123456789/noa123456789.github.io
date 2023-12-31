@@ -1,201 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GroteKleuter.nl</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #fffbf6;
-            color: #2c3e50;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #ff8c00;
-            color: #fff;
-            text-align: center;
-            padding: 1em 0;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        nav ul li {
-            display: inline;
-            margin-right: 20px;
-        }
-
-        nav button {
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        nav button:hover {
-            background-color: #c0392b;
-        }
-
-        section {
-            padding: 40px;
-        }
-
-        section h2 {
-            color: #ff8c00;
-        }
-
-        footer {
-            background-color: #34495e;
-            color: #fff;
-            text-align: center;
-            padding: 1em 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>Welkom op GroteKleuter.nl!</h1>
-        <nav>
-            <ul>
-                <li><button><a href="https://www.tiktok.com/@grotekleuter" target="_blank">TikTok</a></button></li>
-                <li><button><a href="https://www.youtube.com/channel/UC-W-JHn99vpkLj8lpmhFc8Q" target="_blank">YouTube</a></button></li>
-                <li><button><a href="https://discord.gg/ZVMepb2qSM" target="_blank">Discord</a></button></li>
-                <li><button><a href="mailto:nnoa782@gmail.com">Contact</a></button></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="tiktok">
-        <h2>TikTok</h2>
-        <!-- Voeg hier TikTok-inhoud toe -->
-    </section>
-
-    <section id="youtube">
-        <h2>YouTube</h2>
-        <!-- Voeg hier YouTube-inhoud toe -->
-    </section>
-
-    <section id="discord">
-        <h2>Discord</h2>
-        <!-- Voeg hier Discord-inhoud toe -->
-    </section>
-
-    <section id="contact">
-        <h2>Contact</h2>
-        <p>Neem contact met ons op via <a href="mailto:nnoa782@gmail.com">nnoa782@gmail.com</a></p>
-    </section>
-
-
-
-<!-- Voeg hier eventuele stijlen toe -->
-<section id="counter">
-    <h2>Bezoekersaantal</h2>
-    <p id="visitor-count">0</p>
-</section>
-
-<script>
-    let visitorCount = 0;
-
-    function increaseVisitorCount() {
-        visitorCount++;
-        document.getElementById("visitor-count").innerText = visitorCount;
-        localStorage.setItem("visitorCount", visitorCount);
-    }
-
-    window.onload = function() {
-        let storedVisitorCount = localStorage.getItem("visitorCount");
-        if (storedVisitorCount) {
-            visitorCount = parseInt(storedVisitorCount);
-            document.getElementById("visitor-count").innerText = visitorCount;
-        }
-    };
-
-    increaseVisitorCount();
-</script>
-
-<!-- Voeg hier je andere scripts toe -->
-
-<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Chatbot</title>
+    <title>Chatbot met Spraak</title>
     <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        #output {
-            text-align: center;
-        }
+        /* ... (CSS-stijlen zoals eerder) ... */
     </style>
 </head>
-<body>
-    <h1>Voice Chatbot</h1>
-    <div id="output"></div>
+<body class="bright-mode">
+    <h1>Chatbot met Spraak</h1>
+    <button id="toggle-mode" onclick="toggleMode()">Wissel modus</button>
+    <button id="toggle-language" onclick="toggleLanguage()">Wissel taal</button>
+    <div id="menu">
+        <div class="menu-item" onclick="changeLanguage('nl-NL')">Nederlands</div>
+        <div class="menu-item" onclick="changeLanguage('en-US')">English</div>
+    </div>
+    <div id="chat-container"></div>
+    <input type="text" id="user-input" placeholder="Spreek hier..." onkeydown="handleKeyPress(event)" />
+    <button id="speak-button" onclick="startListening()">Luister</button>
 
     <script>
-        const outputDiv = document.getElementById("output");
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+        const synth = window.speechSynthesis;
 
-        function startSpeechRecognition() {
-            const recognition = new webkitSpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
+        recognition.lang = 'nl-NL';
 
-            recognition.onresult = function(event) {
-                const result = event.results[event.results.length - 1];
-                const transcript = result[0].transcript.trim();
-                outputDiv.innerText = `Jij: ${transcript}`;
-                respondToText(transcript);
-            };
+        const roepnaam = 'chatbot';
+        let isDarkMode = false;
 
-            recognition.onend = function() {
-                startSpeechRecognition();
+        // Geheugen voor het bijhouden van gebruikersinvoer
+        const userMemory = {};
+
+        function toggleMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+        }
+
+        function toggleLanguage() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function changeLanguage(lang) {
+            recognition.lang = lang;
+            toggleLanguage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const userMessage = userInput.value;
+                appendMessage('Jij', userMessage, 'user-message');
+                handleUserInput(userMessage, false);
+                userInput.value = '';
+            }
+        }
+
+        function startListening() {
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                appendMessage('Jij', transcript, 'user-message');
+                if (transcript.includes(roepnaam)) {
+                    handleCommand(transcript);
+                } else {
+                    handleUserInput(transcript, true);
+                }
             };
 
             recognition.start();
         }
 
-        function respondToText(text) {
-            // Hier kun je je eigen logica toevoegen om te reageren op de herkende tekst
-            const response = "hallo";
-            outputDiv.innerText = `${outputDiv.innerText}\nAI: ${response}`;
-            speak(response);
+        function appendMessage(sender, message, className) {
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `<span class="${className}">${sender}: ${message}</span>`;
+            chatContainer.appendChild(messageDiv);
         }
 
-        function speak(text) {
-            const synth = window.speechSynthesis;
+        function handleUserInput(userMessage, isSpeech) {
+            const lowerUserMessage = userMessage.toLowerCase();
+
+            if (lowerUserMessage.includes('grotekleuter')) {
+                const botMemory = userMemory['grotekleuter'] || { responses: [] };
+                const botResponse = getBotResponse(botMemory.responses);
+                appendMessage('Chatbot', botResponse, 'bot-message');
+                speakText(botResponse);
+
+                // Voeg gebruikersinvoer toe aan het geheugen
+                botMemory.responses.push(lowerUserMessage);
+                userMemory['grotekleuter'] = botMemory;
+            } else if (isSpeech && lowerUserMessage.includes('plus')) {
+                // Voeg gebruikersinvoer toe aan het geheugen
+                addToMemory('grotekleuter', userMessage);
+
+                // Voer een bewerking uit en geef het resultaat weer
+                const result = performOperation(userMessage);
+                const botResponse = `Het resultaat is ${result}.`;
+                appendMessage('Chatbot', botResponse, 'bot-message');
+                speakText(botResponse);
+            } else {
+                // Voeg gebruikersinvoer toe aan het geheugen
+                addToMemory('grotekleuter', userMessage);
+
+                const botMemory = userMemory['grotekleuter'] || { responses: [] };
+                const botResponse = getBotResponse(botMemory.responses);
+                appendMessage('Chatbot', botResponse, 'bot-message');
+                speakText(botResponse);
+            }
+        }
+
+        function addToMemory(key, value) {
+            const botMemory = userMemory[key] || { responses: [] };
+            botMemory.responses.push(value.toLowerCase());
+            userMemory[key] = botMemory;
+        }
+
+        function getBotResponse(responses) {
+            if (responses && responses.length > 0) {
+                return responses[Math.floor(Math.random() * responses.length)];
+            } else {
+                return getRandomResponse();
+            }
+        }
+
+        function getRandomResponse() {
+            const randomResponses = [
+                'Ik begrijp niet helemaal wat je zegt.',
+                'Kun je dat herhalen?',
+                'Wat kan ik voor je doen?'
+            ];
+            return randomResponses[Math.floor(Math.random() * randomResponses.length)];
+        }
+
+        function speakText(text) {
             const utterance = new SpeechSynthesisUtterance(text);
             synth.speak(utterance);
         }
-
-        startSpeechRecognition();
     </script>
-</body>
-</html>
-
-    
 </body>
 </html>
 
