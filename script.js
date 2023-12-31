@@ -13,4 +13,3 @@ function sendMessage() {
 
     messageInput.value = '';
 }
-
