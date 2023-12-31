@@ -1,38 +1,18 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatApp</title>
-    <style>
-        /* ... (zoals eerder) ... */
-    </style>
+    <title>Chat App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="chat">
-        <div id="berichten">
-            <!-- Hier komen de berichten -->
-        </div>
-        <form action="/berichtVersturen" method="post">
-            <input type="text" name="bericht" placeholder="Typ een bericht...">
-            <button type="submit">Verstuur</button>
-        </form>
+    <div id="chat-container">
+        <div id="chat-display"></div>
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
     </div>
-
-    <div id="kanalen">
-        <h2>Kanalen</h2>
-        <ul>
-            <!-- Hier komen de kanalen -->
-            <li><a href="/kanaal/algemeen">Algemeen</a></li>
-            <li><a href="/kanaal/random">Random</a></li>
-            <!-- Voeg hier handmatig kanalen toe -->
-        </ul>
-        <form action="/kanaalToevoegen" method="post">
-            <input type="text" name="nieuwKanaal" placeholder="Nieuw kanaal...">
-            <button type="submit">+</button>
-        </form>
-    </div>
+    <script src="script.js"></script>
 </body>
 </html>
+
