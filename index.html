@@ -25,9 +25,44 @@
             justify-content: space-between;
         }
 
+        #menu-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+
         #theme-menu, #language-menu {
             display: flex;
             gap: 10px;
+        }
+
+        #theme-menu button, #language-menu button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        #theme-menu button:hover, #language-menu button:hover {
+            background-color: #0056b3;
+        }
+
+        #menu {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #menu-btn:hover + #menu, #menu:hover {
+            display: flex;
         }
 
         #chat-container {
@@ -91,14 +126,17 @@
 <body class="bright-mode">
     <div id="header">
         <h1>Chatbot met Spraak</h1>
-        <div id="theme-menu">
-            <span>Thema:</span>
-            <button onclick="toggleMode()">Wissel modus</button>
-        </div>
-        <div id="language-menu">
-            <span>Taal:</span>
-            <button onclick="changeLanguage('nl-NL')">Nederlands</button>
-            <button onclick="changeLanguage('en-US')">English</button>
+        <button id="menu-btn">&#9776; Menu</button>
+        <div id="menu">
+            <div id="theme-menu">
+                <span>Thema:</span>
+                <button onclick="toggleMode()">Wissel modus</button>
+            </div>
+            <div id="language-menu">
+                <span>Taal:</span>
+                <button onclick="changeLanguage('nl-NL')">Nederlands</button>
+                <button onclick="changeLanguage('en-US')">English</button>
+            </div>
         </div>
     </div>
     <div id="chat-container"></div>
@@ -206,6 +244,11 @@
             recognition.lang = lang;
             currentLanguage = lang;
             saveUserSettings();
+            // Voeg een visueel effect toe bij het wijzigen van de taal
+            document.getElementById('language-menu').classList.add('animated');
+            setTimeout(() => {
+                document.getElementById('language-menu').classList.remove('animated');
+            }, 500);
         }
 
         function saveUserSettings() {
@@ -226,3 +269,4 @@
     </script>
 </body>
 </html>
+
