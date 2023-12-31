@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl-NL">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -113,13 +113,30 @@
         }
 
         .dark-mode {
-            background-color: #343a40;
-            color: #adb5bd;
+            background-color: #121212;
+            color: #ffffff;
         }
 
         .bright-mode {
             background-color: #ffffff;
             color: #212529;
+        }
+
+        #menu-btn, #speak-button {
+            transition: background-color 0.3s;
+        }
+
+        .animated {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(8px); }
+            40% { transform: translateX(-8px); }
+            60% { transform: translateX(8px); }
+            80% { transform: translateX(-8px); }
+            100% { transform: translateX(0); }
         }
     </style>
 </head>
@@ -269,4 +286,3 @@
     </script>
 </body>
 </html>
-
