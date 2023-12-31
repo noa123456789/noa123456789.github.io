@@ -1,18 +1,17 @@
-const socket = io();
+// Vraag de gebruiker om een toegangscode
+const accessCode = prompt('Voer de toegangscode in:');
 
-function sendMessage() {
-    const messageInput = document.getElementById('message-input');
-    const message = messageInput.value;
-
-    if (message.trim() !== '') {
-        // Verzend het bericht naar de server.
-        socket.emit('message', { message });
-    }
-
-    messageInput.value = '';
+// Controleer of de ingevoerde toegangscode correct is
+if (isValidAccessCode(accessCode)) {
+    // Voer hier logica uit voor geauthenticeerde gebruikers
+    alert('Toegang verleend!'); // Vervang dit met je eigen logica
+} else {
+    // Voer hier logica uit voor gebruikers met ongeldige toegangscode
+    alert('Ongeldige toegangscode!'); // Vervang dit met je eigen logica
 }
 
-socket.on('message', (data) => {
-    // Ontvang en verwerk berichten van de server.
-    console.log('Message from ' + data.id + ': ' + data.message);
-});
+// Functie om te controleren of de toegangscode geldig is
+function isValidAccessCode(code) {
+    const validAccessCodes = ['code1', 'code2', 'code3'];
+    return validAccessCodes.includes(code);
+}
