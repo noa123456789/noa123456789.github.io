@@ -1,288 +1,38 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
-<html lang="nl-NL">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot met Spraak</title>
+    <title>ChatApp</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        #header {
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #menu-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 5px 10px;
-        }
-
-        #theme-menu, #language-menu {
-            display: flex;
-            gap: 10px;
-        }
-
-        #theme-menu button, #language-menu button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 5px 10px;
-        }
-
-        #theme-menu button:hover, #language-menu button:hover {
-            background-color: #0056b3;
-        }
-
-        #menu {
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 50px;
-            right: 10px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        #menu-btn:hover + #menu, #menu:hover {
-            display: flex;
-        }
-
-        #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column-reverse;
-        }
-
-        .message {
-            margin: 5px;
-            padding: 8px;
-            border-radius: 8px;
-            max-width: 70%;
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background-color: #28a745;
-            color: white;
-        }
-
-        .bot-message {
-            align-self: flex-start;
-            background-color: #007bff;
-            color: white;
-        }
-
-        #user-input {
-            margin: 10px;
-            padding: 5px;
-            width: calc(100% - 20px);
-        }
-
-        #speak-button {
-            margin: 10px;
-            padding: 5px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        #speak-button:hover {
-            background-color: #0056b3;
-        }
-
-        .dark-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
-
-        .bright-mode {
-            background-color: #ffffff;
-            color: #212529;
-        }
-
-        #menu-btn, #speak-button {
-            transition: background-color 0.3s;
-        }
-
-        .animated {
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(8px); }
-            40% { transform: translateX(-8px); }
-            60% { transform: translateX(8px); }
-            80% { transform: translateX(-8px); }
-            100% { transform: translateX(0); }
-        }
+        /* ... (zoals eerder) ... */
     </style>
 </head>
-<body class="bright-mode">
-    <div id="header">
-        <h1>Chatbot met Spraak</h1>
-        <button id="menu-btn">&#9776; Menu</button>
-        <div id="menu">
-            <div id="theme-menu">
-                <span>Thema:</span>
-                <button onclick="toggleMode()">Wissel modus</button>
-            </div>
-            <div id="language-menu">
-                <span>Taal:</span>
-                <button onclick="changeLanguage('nl-NL')">Nederlands</button>
-                <button onclick="changeLanguage('en-US')">English</button>
-            </div>
+<body>
+    <div id="chat">
+        <div id="berichten">
+            <!-- Hier komen de berichten -->
         </div>
+        <form action="/berichtVersturen" method="post">
+            <input type="text" name="bericht" placeholder="Typ een bericht...">
+            <button type="submit">Verstuur</button>
+        </form>
     </div>
-    <div id="chat-container"></div>
-    <input type="text" id="user-input" placeholder="Spreek hier..." onkeydown="handleKeyPress(event)" />
-    <button id="speak-button" onclick="startListening()">Luister</button>
 
-    <script>
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
-        const synth = window.speechSynthesis;
-
-        recognition.lang = 'nl-NL';
-
-        const roepnaam = 'chatbot';
-        let isDarkMode = false;
-        let currentLanguage = 'nl-NL';
-
-        // Geheugen voor het bijhouden van gebruikersinvoer
-        const userMemoryKey = 'grotekleuter';
-        const userMemory = JSON.parse(localStorage.getItem(userMemoryKey)) || { responses: [] };
-
-        function saveUserMemory() {
-            localStorage.setItem(userMemoryKey, JSON.stringify(userMemory));
-        }
-
-        function toggleMode() {
-            const body = document.body;
-            body.classList.toggle('dark-mode');
-            isDarkMode = !isDarkMode;
-            saveUserSettings();
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                const userMessage = userInput.value;
-                appendMessage('Jij', userMessage, 'user-message');
-                handleUserInput(userMessage, false);
-                userInput.value = '';
-            }
-        }
-
-        function startListening() {
-            recognition.onresult = function (event) {
-                const transcript = event.results[0][0].transcript.toLowerCase();
-                appendMessage('Jij', transcript, 'user-message');
-                if (transcript.includes(roepnaam)) {
-                    handleCommand(transcript);
-                } else {
-                    handleUserInput(transcript, true);
-                }
-            };
-
-            recognition.start();
-        }
-
-        function appendMessage(sender, message, className) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${className}`;
-            messageDiv.innerHTML = `<span>${sender}: ${message}</span>`;
-            chatContainer.appendChild(messageDiv);
-
-            // Scroll naar de onderkant van het chatvenster
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function handleUserInput(userMessage, isSpeech) {
-            const lowerUserMessage = userMessage.toLowerCase();
-
-            if (lowerUserMessage.includes('grotekleuter')) {
-                const botResponse = getBotResponse();
-                appendMessage('Chatbot', botResponse, 'bot-message');
-                speakText(botResponse);
-
-                // Voeg gebruikersinvoer toe aan het geheugen
-                userMemory.responses.push(lowerUserMessage);
-                saveUserMemory();
-            } else {
-                // Voeg gebruikersinvoer toe aan het geheugen
-                userMemory.responses.push(lowerUserMessage);
-                saveUserMemory();
-
-                const botResponse = getBotResponse();
-                appendMessage('Chatbot', botResponse, 'bot-message');
-                speakText(botResponse);
-            }
-        }
-
-        function getBotResponse() {
-            const responses = userMemory.responses;
-            if (responses && responses.length > 0) {
-                const randomIndex = Math.floor(Math.random() * responses.length);
-                return responses[randomIndex];
-            } else {
-                return 'Ik begrijp niet helemaal wat je zegt.';
-            }
-        }
-
-        function speakText(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            synth.speak(utterance);
-        }
-
-        function changeLanguage(lang) {
-            recognition.lang = lang;
-            currentLanguage = lang;
-            saveUserSettings();
-            // Voeg een visueel effect toe bij het wijzigen van de taal
-            document.getElementById('language-menu').classList.add('animated');
-            setTimeout(() => {
-                document.getElementById('language-menu').classList.remove('animated');
-            }, 500);
-        }
-
-        function saveUserSettings() {
-            localStorage.setItem('userSettings', JSON.stringify({ isDarkMode, currentLanguage }));
-        }
-
-        function loadUserSettings() {
-            const userSettings = JSON.parse(localStorage.getItem('userSettings'));
-            if (userSettings) {
-                isDarkMode = userSettings.isDarkMode;
-                currentLanguage = userSettings.currentLanguage;
-                document.body.classList.toggle('dark-mode', isDarkMode);
-            }
-        }
-
-        // Laad gebruikersinstellingen bij het starten van de app
-        loadUserSettings();
-    </script>
+    <div id="kanalen">
+        <h2>Kanalen</h2>
+        <ul>
+            <!-- Hier komen de kanalen -->
+            <li><a href="/kanaal/algemeen">Algemeen</a></li>
+            <li><a href="/kanaal/random">Random</a></li>
+            <!-- Voeg hier handmatig kanalen toe -->
+        </ul>
+        <form action="/kanaalToevoegen" method="post">
+            <input type="text" name="nieuwKanaal" placeholder="Nieuw kanaal...">
+            <button type="submit">+</button>
+        </form>
+    </div>
 </body>
 </html>
