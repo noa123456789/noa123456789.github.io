@@ -6,16 +6,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot met Spraak</title>
     <style>
-        /* ... (CSS-stijlen zoals eerder) ... */
+        body {
+            font-family: 'Arial', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #theme-menu, #language-menu {
+            display: flex;
+            gap: 10px;
+        }
+
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .message {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #28a745;
+            color: white;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #007bff;
+            color: white;
+        }
+
+        #user-input {
+            margin: 10px;
+            padding: 5px;
+            width: calc(100% - 20px);
+        }
+
+        #speak-button {
+            margin: 10px;
+            padding: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #speak-button:hover {
+            background-color: #0056b3;
+        }
+
+        .dark-mode {
+            background-color: #343a40;
+            color: #adb5bd;
+        }
+
+        .bright-mode {
+            background-color: #ffffff;
+            color: #212529;
+        }
     </style>
 </head>
 <body class="bright-mode">
-    <h1>Chatbot met Spraak</h1>
-    <button id="toggle-mode" onclick="toggleMode()">Wissel modus</button>
-    <button id="toggle-language" onclick="toggleLanguage()">Wissel taal</button>
-    <div id="menu">
-        <div class="menu-item" onclick="changeLanguage('nl-NL')">Nederlands</div>
-        <div class="menu-item" onclick="changeLanguage('en-US')">English</div>
+    <div id="header">
+        <h1>Chatbot met Spraak</h1>
+        <div id="theme-menu">
+            <span>Thema:</span>
+            <button onclick="toggleMode()">Wissel modus</button>
+        </div>
+        <div id="language-menu">
+            <span>Taal:</span>
+            <button onclick="changeLanguage('nl-NL')">Nederlands</button>
+            <button onclick="changeLanguage('en-US')">English</button>
+        </div>
     </div>
     <div id="chat-container"></div>
     <input type="text" id="user-input" placeholder="Spreek hier..." onkeydown="handleKeyPress(event)" />
@@ -31,23 +115,21 @@
 
         const roepnaam = 'chatbot';
         let isDarkMode = false;
+        let currentLanguage = 'nl-NL';
 
         // Geheugen voor het bijhouden van gebruikersinvoer
-        const userMemory = {};
+        const userMemoryKey = 'grotekleuter';
+        const userMemory = JSON.parse(localStorage.getItem(userMemoryKey)) || { responses: [] };
+
+        function saveUserMemory() {
+            localStorage.setItem(userMemoryKey, JSON.stringify(userMemory));
+        }
 
         function toggleMode() {
             const body = document.body;
             body.classList.toggle('dark-mode');
-        }
-
-        function toggleLanguage() {
-            const menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function changeLanguage(lang) {
-            recognition.lang = lang;
-            toggleLanguage();
+            isDarkMode = !isDarkMode;
+            saveUserSettings();
         }
 
         function handleKeyPress(event) {
@@ -75,72 +157,72 @@
 
         function appendMessage(sender, message, className) {
             const messageDiv = document.createElement('div');
-            messageDiv.innerHTML = `<span class="${className}">${sender}: ${message}</span>`;
+            messageDiv.className = `message ${className}`;
+            messageDiv.innerHTML = `<span>${sender}: ${message}</span>`;
             chatContainer.appendChild(messageDiv);
+
+            // Scroll naar de onderkant van het chatvenster
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         function handleUserInput(userMessage, isSpeech) {
             const lowerUserMessage = userMessage.toLowerCase();
 
             if (lowerUserMessage.includes('grotekleuter')) {
-                const botMemory = userMemory['grotekleuter'] || { responses: [] };
-                const botResponse = getBotResponse(botMemory.responses);
+                const botResponse = getBotResponse();
                 appendMessage('Chatbot', botResponse, 'bot-message');
                 speakText(botResponse);
 
                 // Voeg gebruikersinvoer toe aan het geheugen
-                botMemory.responses.push(lowerUserMessage);
-                userMemory['grotekleuter'] = botMemory;
-            } else if (isSpeech && lowerUserMessage.includes('plus')) {
-                // Voeg gebruikersinvoer toe aan het geheugen
-                addToMemory('grotekleuter', userMessage);
-
-                // Voer een bewerking uit en geef het resultaat weer
-                const result = performOperation(userMessage);
-                const botResponse = `Het resultaat is ${result}.`;
-                appendMessage('Chatbot', botResponse, 'bot-message');
-                speakText(botResponse);
+                userMemory.responses.push(lowerUserMessage);
+                saveUserMemory();
             } else {
                 // Voeg gebruikersinvoer toe aan het geheugen
-                addToMemory('grotekleuter', userMessage);
+                userMemory.responses.push(lowerUserMessage);
+                saveUserMemory();
 
-                const botMemory = userMemory['grotekleuter'] || { responses: [] };
-                const botResponse = getBotResponse(botMemory.responses);
+                const botResponse = getBotResponse();
                 appendMessage('Chatbot', botResponse, 'bot-message');
                 speakText(botResponse);
             }
         }
 
-        function addToMemory(key, value) {
-            const botMemory = userMemory[key] || { responses: [] };
-            botMemory.responses.push(value.toLowerCase());
-            userMemory[key] = botMemory;
-        }
-
-        function getBotResponse(responses) {
+        function getBotResponse() {
+            const responses = userMemory.responses;
             if (responses && responses.length > 0) {
-                return responses[Math.floor(Math.random() * responses.length)];
+                const randomIndex = Math.floor(Math.random() * responses.length);
+                return responses[randomIndex];
             } else {
-                return getRandomResponse();
+                return 'Ik begrijp niet helemaal wat je zegt.';
             }
-        }
-
-        function getRandomResponse() {
-            const randomResponses = [
-                'Ik begrijp niet helemaal wat je zegt.',
-                'Kun je dat herhalen?',
-                'Wat kan ik voor je doen?'
-            ];
-            return randomResponses[Math.floor(Math.random() * randomResponses.length)];
         }
 
         function speakText(text) {
             const utterance = new SpeechSynthesisUtterance(text);
             synth.speak(utterance);
         }
+
+        function changeLanguage(lang) {
+            recognition.lang = lang;
+            currentLanguage = lang;
+            saveUserSettings();
+        }
+
+        function saveUserSettings() {
+            localStorage.setItem('userSettings', JSON.stringify({ isDarkMode, currentLanguage }));
+        }
+
+        function loadUserSettings() {
+            const userSettings = JSON.parse(localStorage.getItem('userSettings'));
+            if (userSettings) {
+                isDarkMode = userSettings.isDarkMode;
+                currentLanguage = userSettings.currentLanguage;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+            }
+        }
+
+        // Laad gebruikersinstellingen bij het starten van de app
+        loadUserSettings();
     </script>
 </body>
 </html>
-
-
-
