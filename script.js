@@ -1,30 +1,16 @@
-// server.js
+function sendMessage() {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value;
 
-const express = require('express');
-const bodyParser = require('body-parser');
+    if (message.trim() !== '') {
+        const chatDisplay = document.getElementById('chat-display');
+        const newMessage = document.createElement('div');
+        newMessage.textContent = message;
+        chatDisplay.appendChild(newMessage);
 
-const app = express();
-const port = 3000;
+        // Voeg hier de logica toe om het bericht naar de server te sturen (AJAX, WebSockets, etc.).
+    }
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public'));
+    messageInput.value = '';
+}
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
-
-app.post('/berichtVersturen', (req, res) => {
-    const bericht = req.body.bericht;
-    // Verwerk het ontvangen bericht (bijv. opslaan in een database)
-    res.redirect('/');
-});
-
-app.post('/kanaalToevoegen', (req, res) => {
-    const nieuwKanaal = req.body.nieuwKanaal;
-    // Verwerk het nieuwe kanaal (bijv. opslaan in een array)
-    res.redirect('/');
-});
-
-app.listen(port, () => {
-    console.log(`Server is gestart op http://localhost:${port}`);
-});
