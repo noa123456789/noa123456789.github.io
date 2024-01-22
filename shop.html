@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijn Winkel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f8f8f8;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        .container {
+            display: flex;
+        }
+        .sidebar {
+            width: 20%;
+            background-color: #444;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .menu-btn {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .menu-btn:hover {
+            background-color: #555;
+        }
+        .product {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .buy-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .buy-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mijn Winkel</h1>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <a href="#" class="menu-btn">Home</a>
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="#">AssemblySelect</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+
+
+            <div class="product">
+                <img src="Gigabyte.jpg" alt="Product 2">
+                <h2>Gaming PC</h2>
+                <p>Goede gaming pc voor beginners</p>
+                <p>Intel i7 14900, RTX 3060, 32GB RAM, 2TB SSD opslag</p>
+                <p>Prijs: $1381,50</p>
+                <p>ID: 1</p>
+                <a href="https://forms.gle/NyoMFnv3uxMXoC9ZA" class="buy-btn">Kopen</a>
+            </div>
+            
+            <!-- Voeg meer producten toe zoals hierboven -->
+        </div>
+    </div>
+
+</body>
+</html>
+
