@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winkel</title>
+    <title>Winkel </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,7 +40,7 @@
         form {
             margin-top: 20px;
         }
-        input {
+        input, select {
             width: calc(100% - 20px);
             padding: 8px;
             margin-bottom: 10px;
@@ -54,15 +54,15 @@
             padding: 20px;
             border-radius: 8px;
         }
-        .hidden {
-            display: none;
+        #admin-section textarea {
+            width: 100%;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Winkel</h1>
+        <h1 id="shop-title">Winkel</h1>
 
         <button class="button" id="koop-knop-1">Koop Product 1</button>
         <button class="button" id="koop-knop-2">Koop Product 2</button>
@@ -90,9 +90,21 @@
         <!-- Admin Console Sectie -->
         <div id="admin-section">
             <h3>Admin Console</h3>
-            <p>Wijzig hier de tekst of voer andere admin taken uit.</p>
-            <textarea id="admin-text" rows="5" cols="40">Voer hier admin tekst in...</textarea>
-            <button class="button" onclick="saveAdminChanges()">Opslaan</button>
+            <p>Wijzig hier de tekst en stijl van de winkelpagina.</p>
+
+            <!-- Wijzig de titeltekst -->
+            <label for="admin-title-text">Wijzig winkelnaam:</label>
+            <input type="text" id="admin-title-text" value="Winkel">
+
+            <!-- Wijzig de tekstkleur -->
+            <label for="admin-title-color">Wijzig de kleur van de titel:</label>
+            <input type="color" id="admin-title-color" value="#000000">
+
+            <!-- Wijzig de achtergrondkleur -->
+            <label for="admin-bg-color">Wijzig achtergrondkleur van de pagina:</label>
+            <input type="color" id="admin-bg-color" value="#f4f4f4">
+
+            <button class="button" id="apply-changes">Toepassen</button>
         </div>
     </div>
 
@@ -117,12 +129,24 @@
             }
         });
 
-        // Functie om admin wijzigingen op te slaan (eventueel verdere acties hier toevoegen)
-        function saveAdminChanges() {
-            var adminText = document.getElementById('admin-text').value;
-            alert('Admin wijzigingen opgeslagen: ' + adminText);
-            // Hier zou je de wijzigingen eventueel kunnen opslaan in localStorage of naar een backend sturen
-        }
+        // Functie om admin wijzigingen door te voeren
+        document.getElementById('apply-changes').addEventListener('click', function() {
+            // Haal de nieuwe waarden op
+            var newTitleText = document.getElementById('admin-title-text').value;
+            var newTitleColor = document.getElementById('admin-title-color').value;
+            var newBgColor = document.getElementById('admin-bg-color').value;
+
+            // Wijzig de titeltekst
+            document.getElementById('shop-title').textContent = newTitleText;
+
+            // Wijzig de kleur van de titel
+            document.getElementById('shop-title').style.color = newTitleColor;
+
+            // Wijzig de achtergrondkleur van de pagina
+            document.body.style.backgroundColor = newBgColor;
+
+            alert('Wijzigingen succesvol toegepast!');
+        });
     </script>
 
 </body>
