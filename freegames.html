@@ -216,3 +216,17 @@
             localStorage.setItem('titleColor', newTitleColor);
             localStorage.setItem('bgColor', newBgColor);
             localStorage.setItem('buttonColor', newButtonColor);
+
+            // Update de product links
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            products.forEach((product, index) => {
+                const newLink = document.getElementById(`product-link-${index}`).value;
+                product.link = newLink;
+            });
+            localStorage.setItem('products', JSON.stringify(products));
+
+            alert('Wijzigingen succesvol toegepast en opgeslagen!');
+            loadProducts(); // Herlaad de producten
+        });
+
+        //
