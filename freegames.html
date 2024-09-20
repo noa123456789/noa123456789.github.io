@@ -57,6 +57,11 @@
         #admin-section textarea {
             width: 100%;
         }
+        .product-button {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -64,10 +69,9 @@
     <div class="container">
         <h1 id="shop-title">Winkel</h1>
 
-        <button class="button" id="koop-knop-1">Koop Product 1</button>
-        <button class="button" id="koop-knop-2">Koop Product 2</button>
+        <div id="product-buttons"></div> <!-- Hier komen de dynamische product knoppen -->
 
-        <form id="checkout-form">
+        <form id="checkout-form" style="display: none;">
             <h3>Voer uw gegevens in:</h3>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -90,7 +94,7 @@
         <!-- Admin Console Sectie -->
         <div id="admin-section">
             <h3>Admin Console</h3>
-            <p>Wijzig hier de tekst en stijl van de winkelpagina.</p>
+            <p>Wijzig hier de tekst, stijl en links van de winkelpagina.</p>
 
             <!-- Wijzig de titeltekst -->
             <label for="admin-title-text">Wijzig winkelnaam:</label>
@@ -104,6 +108,17 @@
             <label for="admin-bg-color">Wijzig achtergrondkleur van de pagina:</label>
             <input type="color" id="admin-bg-color" value="#f4f4f4">
 
+            <!-- Productbeheer -->
+            <h3>Productbeheer</h3>
+            <label for="new-product-name">Nieuwe productnaam:</label>
+            <input type="text" id="new-product-name" placeholder="Productnaam">
+            <label for="new-product-link">Tikkie-link:</label>
+            <input type="text" id="new-product-link" placeholder="Tikkie-link">
+            <button class="button" id="add-product">Voeg product toe</button>
+
+            <h3>Bestaande producten:</h3>
+            <div id="product-list"></div>
+
             <button class="button" id="apply-changes">Toepassen</button>
         </div>
     </div>
@@ -111,6 +126,12 @@
     <script>
         // Laad de opgeslagen instellingen (indien aanwezig) uit localStorage bij het laden van de pagina
         window.onload = function() {
+            loadSettings();
+            loadProducts();
+        }
+
+        // Functie om opgeslagen instellingen te laden
+        function loadSettings() {
             if (localStorage.getItem('shopTitle')) {
                 document.getElementById('shop-title').textContent = localStorage.getItem('shopTitle');
                 document.getElementById('admin-title-text').value = localStorage.getItem('shopTitle');
@@ -125,6 +146,36 @@
                 document.body.style.backgroundColor = localStorage.getItem('bgColor');
                 document.getElementById('admin-bg-color').value = localStorage.getItem('bgColor');
             }
+        }
+
+        // Laad bestaande producten uit localStorage
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const productButtonsContainer = document.getElementById('product-buttons');
+            const productListContainer = document.getElementById('product-list');
+
+            productButtonsContainer.innerHTML = '';
+            productListContainer.innerHTML = '';
+
+            products.forEach((product, index) => {
+                // Voeg knoppen toe voor elk product
+                const productButton = document.createElement('button');
+                productButton.className = 'button';
+                productButton.textContent = `Koop ${product.name}`;
+                productButton.addEventListener('click', () => {
+                    window.location.href = product.link; // Verwijs naar de Tikkie-link
+                });
+                productButtonsContainer.appendChild(productButton);
+
+                // Voeg bewerkingsopties toe in de admin-console
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-button';
+                productDiv.innerHTML = `
+                    <span>${product.name}</span>
+                    <input type="text" value="${product.link}" id="product-link-${index}">
+                `;
+                productListContainer.appendChild(productDiv);
+            });
         }
 
         // Admin login functionaliteit
@@ -159,9 +210,17 @@
             localStorage.setItem('titleColor', newTitleColor);
             localStorage.setItem('bgColor', newBgColor);
 
-            alert('Wijzigingen succesvol toegepast en opgeslagen!');
-        });
-    </script>
+            // Update de product links
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            products.forEach((product, index) => {
+                const newLink = document.getElementById(`product-link-${index}`).value;
+                product.link = newLink;
+            });
+            localStorage.setItem('products', JSON.stringify(products));
 
-</body>
-</html>
+            alert('Wijzigingen succesvol toegepast en opgeslagen!');
+            loadProducts(); // Herlaad de producten
+        });
+
+        // Functie om nieuwe producten toe te voegen
+        document.getElementById('add-product
