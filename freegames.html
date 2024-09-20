@@ -7,25 +7,79 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h2 {
+            color: #2980b9;
+        }
+        form, .admin-section, #product-list {
+            margin: 20px 0;
+        }
+        input[type="text"], input[type="password"], input[type="url"], input[type="file"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3498db;
         }
         .product {
             border: 1px solid #ccc;
             padding: 15px;
             margin: 15px 0;
+            border-radius: 5px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+        }
+        .product img {
+            max-width: 100px;
+            margin-right: 20px;
+            border-radius: 5px;
         }
         .admin-section {
-            margin: 30px 0;
             display: none;
         }
         .admin-section.active {
             display: block;
+        }
+        .product-info {
+            display: flex;
+            align-items: center;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            margin-left: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
@@ -60,6 +114,7 @@
             <h3>Producten toevoegen</h3>
             <input type="text" id="product-name" placeholder="Productnaam" required>
             <input type="url" id="product-link" placeholder="Betalingslink" required>
+            <input type="file" id="product-image" accept="image/*">
             <button id="add-product">Product Toevoegen</button>
         </div>
     </div>
@@ -75,10 +130,37 @@
             products.forEach((product, index) => {
                 const productElement = document.createElement('div');
                 productElement.classList.add('product');
-                productElement.innerHTML = `
-                    <span>${product.name}</span>
-                    <a href="${product.link}" target="_blank">Koop</a>
-                `;
+
+                const productInfo = document.createElement('div');
+                productInfo.classList.add('product-info');
+
+                if (product.image) {
+                    const img = document.createElement('img');
+                    img.src = product.image;
+                    productInfo.appendChild(img);
+                }
+
+                const productName = document.createElement('span');
+                productName.innerText = product.name;
+                productInfo.appendChild(productName);
+
+                const buyLink = document.createElement('a');
+                buyLink.href = product.link;
+                buyLink.innerText = 'Koop';
+                buyLink.target = '_blank';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerText = 'Verwijder';
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.onclick = () => {
+                    products.splice(index, 1); // Verwijder product
+                    displayProducts(); // Herlaad producten
+                };
+
+                productElement.appendChild(productInfo);
+                productElement.appendChild(buyLink);
+                productElement.appendChild(deleteBtn);
+
                 productList.appendChild(productElement);
             });
         }
@@ -109,10 +191,22 @@
         document.getElementById('add-product').addEventListener('click', () => {
             const productName = document.getElementById('product-name').value;
             const productLink = document.getElementById('product-link').value;
+            const productImage = document.getElementById('product-image').files[0];
 
             if (productName && productLink) {
-                products.push({ name: productName, link: productLink });
-                displayProducts();
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    products.push({ name: productName, link: productLink, image: event.target.result });
+                    displayProducts();
+                };
+
+                if (productImage) {
+                    reader.readAsDataURL(productImage); // Laad de afbeelding in als base64
+                } else {
+                    products.push({ name: productName, link: productLink, image: null });
+                    displayProducts();
+                }
+
                 alert('Product toegevoegd');
             } else {
                 alert('Vul alle velden in');
