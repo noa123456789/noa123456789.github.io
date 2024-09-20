@@ -180,10 +180,14 @@
         // Admin login functionaliteit
         document.getElementById('admin-login').addEventListener('click', function() {
             var password = document.getElementById('admin-password').value;
-            
+
+            // Controleer of het wachtwoord overeenkomt
             if (password === '2008') {
+                // Wachtwoord klopt, toon de admin-sectie
                 document.getElementById('admin-section').style.display = 'block';
+                document.getElementById('admin-password').value = ''; // Maak het wachtwoordveld leeg na succesvolle login
             } else {
+                // Wachtwoord is onjuist, toon een foutmelding
                 alert('Onjuist wachtwoord, probeer opnieuw.');
             }
         });
@@ -218,4 +222,4 @@
             localStorage.setItem('buttonColor', newButtonColor);
 
             // Update de product links
-            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const products = JSON.parse
