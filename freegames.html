@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn Webshop</title>
     <style>
+        /* Stijlen blijven hetzelfde */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -120,8 +121,12 @@
     </div>
 
     <script>
-        let products = [];
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let shopName = localStorage.getItem('shopName') || 'Mijn Webshop';
         const adminPassword = '2008';
+
+        // Update de winkelnaam bij het laden van de pagina
+        document.getElementById('shop-name').innerText = shopName;
 
         // Functie om producten weer te geven
         function displayProducts() {
@@ -154,6 +159,7 @@
                 deleteBtn.classList.add('delete-btn');
                 deleteBtn.onclick = () => {
                     products.splice(index, 1); // Verwijder product
+                    saveProducts(); // Sla de nieuwe lijst op
                     displayProducts(); // Herlaad producten
                 };
 
@@ -163,6 +169,11 @@
 
                 productList.appendChild(productElement);
             });
+        }
+
+        // Functie om producten op te slaan in LocalStorage
+        function saveProducts() {
+            localStorage.setItem('products', JSON.stringify(products));
         }
 
         // Functie voor admin login
@@ -180,7 +191,9 @@
         document.getElementById('change-shop-name').addEventListener('click', () => {
             const newShopName = document.getElementById('new-shop-name').value;
             if (newShopName) {
+                shopName = newShopName;
                 document.getElementById('shop-name').innerText = newShopName;
+                localStorage.setItem('shopName', newShopName); // Sla de nieuwe naam op in LocalStorage
                 alert('Winkelnaam gewijzigd');
             } else {
                 alert('Voer een geldige winkelnaam in');
@@ -190,20 +203,27 @@
         // Functie om producten toe te voegen
         document.getElementById('add-product').addEventListener('click', () => {
             const productName = document.getElementById('product-name').value;
-            const productLink = document.getElementById('product-link').value;
+            let productLink = document.getElementById('product-link').value;
             const productImage = document.getElementById('product-image').files[0];
+
+            // Controleer of de link begint met 'http://' of 'https://'
+            if (!productLink.startsWith('http://') && !productLink.startsWith('https://')) {
+                productLink = 'http://' + productLink;  // Voeg 'http://' toe als dit ontbreekt
+            }
 
             if (productName && productLink) {
                 let reader = new FileReader();
                 reader.onload = function(event) {
                     products.push({ name: productName, link: productLink, image: event.target.result });
+                    saveProducts(); // Sla het product op in LocalStorage
                     displayProducts();
                 };
 
                 if (productImage) {
-                    reader.readAsDataURL(productImage); // Laad de afbeelding in als base64
+                    reader.readAsDataURL(productImage);  // Laad de afbeelding in als base64
                 } else {
                     products.push({ name: productName, link: productLink, image: null });
+                    saveProducts(); // Sla het product op in LocalStorage
                     displayProducts();
                 }
 
