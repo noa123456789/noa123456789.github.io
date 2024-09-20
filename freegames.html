@@ -71,20 +71,6 @@
 
         <div id="product-buttons"></div> <!-- Hier komen de dynamische product knoppen -->
 
-        <form id="checkout-form" style="display: none;">
-            <h3>Voer uw gegevens in:</h3>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="adres">Adres:</label>
-            <input type="text" id="adres" name="adres" required>
-
-            <label for="telefoon">Telefoonnummer:</label>
-            <input type="tel" id="telefoon" name="telefoon" required>
-
-            <button type="submit" class="button">Betaal met Tikkie</button>
-        </form>
-
         <!-- Wachtwoord voor admin console -->
         <h2>Admin Console</h2>
         <label for="admin-password">Voer Admin Wachtwoord in:</label>
@@ -107,6 +93,10 @@
             <!-- Wijzig de achtergrondkleur -->
             <label for="admin-bg-color">Wijzig achtergrondkleur van de pagina:</label>
             <input type="color" id="admin-bg-color" value="#f4f4f4">
+
+            <!-- Wijzig de kleur van de knoppen -->
+            <label for="admin-button-color">Wijzig knopkleur:</label>
+            <input type="color" id="admin-button-color" value="#28a745">
 
             <!-- Productbeheer -->
             <h3>Productbeheer</h3>
@@ -146,6 +136,14 @@
                 document.body.style.backgroundColor = localStorage.getItem('bgColor');
                 document.getElementById('admin-bg-color').value = localStorage.getItem('bgColor');
             }
+
+            if (localStorage.getItem('buttonColor')) {
+                const buttons = document.querySelectorAll('.button');
+                buttons.forEach(button => {
+                    button.style.backgroundColor = localStorage.getItem('buttonColor');
+                });
+                document.getElementById('admin-button-color').value = localStorage.getItem('buttonColor');
+            }
         }
 
         // Laad bestaande producten uit localStorage
@@ -162,6 +160,7 @@
                 const productButton = document.createElement('button');
                 productButton.className = 'button';
                 productButton.textContent = `Koop ${product.name}`;
+                productButton.style.backgroundColor = localStorage.getItem('buttonColor') || '#28a745';
                 productButton.addEventListener('click', () => {
                     window.location.href = product.link; // Verwijs naar de Tikkie-link
                 });
@@ -195,6 +194,7 @@
             var newTitleText = document.getElementById('admin-title-text').value;
             var newTitleColor = document.getElementById('admin-title-color').value;
             var newBgColor = document.getElementById('admin-bg-color').value;
+            var newButtonColor = document.getElementById('admin-button-color').value;
 
             // Wijzig de titeltekst
             document.getElementById('shop-title').textContent = newTitleText;
@@ -205,22 +205,14 @@
             // Wijzig de achtergrondkleur van de pagina
             document.body.style.backgroundColor = newBgColor;
 
+            // Wijzig de kleur van de knoppen
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach(button => {
+                button.style.backgroundColor = newButtonColor;
+            });
+
             // Sla de wijzigingen op in localStorage
             localStorage.setItem('shopTitle', newTitleText);
             localStorage.setItem('titleColor', newTitleColor);
             localStorage.setItem('bgColor', newBgColor);
-
-            // Update de product links
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            products.forEach((product, index) => {
-                const newLink = document.getElementById(`product-link-${index}`).value;
-                product.link = newLink;
-            });
-            localStorage.setItem('products', JSON.stringify(products));
-
-            alert('Wijzigingen succesvol toegepast en opgeslagen!');
-            loadProducts(); // Herlaad de producten
-        });
-
-        // Functie om nieuwe producten toe te voegen
-        document.getElementById('add-product
+            localStorage.setItem('buttonColor', newButtonColor);
