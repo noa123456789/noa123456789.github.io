@@ -212,14 +212,4 @@
             // Wijzig de kleur van de knoppen
             const buttons = document.querySelectorAll('.button');
             buttons.forEach(button => {
-                button.style.backgroundColor = newButtonColor;
-            });
-
-            // Sla de wijzigingen op in localStorage
-            localStorage.setItem('shopTitle', newTitleText);
-            localStorage.setItem('titleColor', newTitleColor);
-            localStorage.setItem('bgColor', newBgColor);
-            localStorage.setItem('buttonColor', newButtonColor);
-
-            // Update de product links
-            const products = JSON.parse
+                button.style.backgroundColor = newButton
