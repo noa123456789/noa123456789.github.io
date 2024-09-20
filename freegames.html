@@ -48,7 +48,7 @@
             border: 1px solid #ccc;
         }
         #admin-section {
-            display: none;
+            display: none; /* Verberg de adminsectie standaard */
             margin-top: 20px;
             background-color: #e0e0e0;
             padding: 20px;
@@ -67,17 +67,17 @@
 <body>
 
     <div class="container">
+        <!-- Winkelnaam en producten -->
         <h1 id="shop-title">Winkel</h1>
-
         <div id="product-buttons"></div> <!-- Hier komen de dynamische product knoppen -->
 
-        <!-- Wachtwoord voor admin console -->
+        <!-- Admin Login Sectie (zichtbaar onder de producten) -->
         <h2>Admin Console</h2>
         <label for="admin-password">Voer Admin Wachtwoord in:</label>
         <input type="password" id="admin-password" placeholder="Wachtwoord">
         <button class="button" id="admin-login">Inloggen</button>
 
-        <!-- Admin Console Sectie -->
+        <!-- Admin Console Sectie (verstopt, alleen zichtbaar na inloggen) -->
         <div id="admin-section">
             <h3>Admin Console</h3>
             <p>Wijzig hier de tekst, stijl en links van de winkelpagina.</p>
@@ -219,14 +219,3 @@
 
             // Update de product links
             const products = JSON.parse(localStorage.getItem('products')) || [];
-            products.forEach((product, index) => {
-                const newLink = document.getElementById(`product-link-${index}`).value;
-                product.link = newLink;
-            });
-            localStorage.setItem('products', JSON.stringify(products));
-
-            alert('Wijzigingen succesvol toegepast en opgeslagen!');
-            loadProducts(); // Herlaad de producten
-        });
-
-        //
