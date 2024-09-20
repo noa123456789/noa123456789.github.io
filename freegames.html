@@ -1,98 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gratis Game Download</title>
+    <title>Winkel</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f2f2f2;
-            color: #333;
-            text-align: center;
-            margin: 50px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
-
-        h1 {
-            color: #007BFF;
-        }
-
-        p {
+        .container {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+        h1 {
+            text-align: center;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
             background-color: #28a745;
-            color: #eb0f0f;
+            color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-size: 16px;
         }
-
-        button:hover {
+        .button:hover {
             background-color: #218838;
         }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            margin: 0;
+        form {
+            display: none;
+            margin-top: 20px;
         }
-
-        /* Zijmenu stijlen */
-        .zijmenu {
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Hoofdinhoud stijlen */
-        .hoofdinhoud {
-            flex: 1;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Stijlen voor de menu-items */
-        .zijmenu-item {
-            padding: 10px;
+        input {
+            width: calc(100% - 20px);
+            padding: 8px;
             margin-bottom: 10px;
-            text-decoration: none;
-            color: #fff;
-            display: block;
-            transition: background-color 0.3s;
+            border-radius: 4px;
+            border: 1px solid #ccc;
         }
-
-        /* Stijl voor actief menu-item */
-        .zijmenu-item:hover {
-            background-color: #555;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-       <!-- Zijmenu -->
-       <div class="zijmenu">
-        <a href="index.html" class="zijmenu-item">Home</a>
-        <a href="limited-games.html" class="zijmenu-item">limited games</a>
-        <a href="mods.html" class="zijmenu-item">mods</a>
-        <a href="#" class="zijmenu-item">Contact</a>
+
+    <div class="container">
+        <h1>Winkel</h1>
+
+        <button class="button" id="koop-knop-1">Koop Product 1</button>
+        <button class="button" id="koop-knop-2">Koop Product 2</button>
+
+        <form id="checkout-form">
+            <h3>Voer uw gegevens in:</h3>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="adres">Adres:</label>
+            <input type="text" id="adres" name="adres" required>
+
+            <label for="telefoon">Telefoonnummer:</label>
+            <input type="tel" id="telefoon" name="telefoon" required>
+
+            <button type="submit" class="button">Betaal met Tikkie</button>
+        </form>
     </div>
 
-    <!-- Hoofdinhoud -->
-    
-    <h1>Gratis Game</h1>
-    <p>Welkom bij onze gratis game!</p>
-<br>
-    <!-- Voeg hier de link naar het daadwerkelijke bestand in -->
-    <a href="https://download1503.mediafire.com/u6hsg3dwvxegELMOxzJcqqIcorVsSS71fCUa_2hsmT-jOPBrSh4D9PJDXGz45_NQUe3SJkzy6RagWfsraN0Xr2yBgERp2SKtgaoBVakGuwWoeie6_cPIBpc4rvMAPxBWw6pnhMKEjG1ha-n4hT6fzLPawU4jsU4nqWVMo2WReeLGag/vhwn61ek0hd9rrm/My-Summer.rar" download>
-        <h2>my summer car</h2>
-        <h1>deze game kost normaal 14.99 nu kost het bij ons 0</h1>
-        <button>Download Game</button>
-    </a>
+    <script>
+        document.getElementById('koop-knop-1').addEventListener('click', function() {
+            document.getElementById('checkout-form').style.display = 'block';
+        });
+
+        document.getElementById('koop-knop-2').addEventListener('click', function() {
+            document.getElementById('checkout-form').style.display = 'block';
+        });
+
+        document.getElementById('checkout-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Haal de ingevulde gegevens op
+            var email = document.getElementById('email').value;
+            var adres = document.getElementById('adres').value;
+            var telefoon = document.getElementById('telefoon').value;
+
+            // Controleer of de velden correct zijn ingevuld (optioneel, al verplicht door HTML)
+
+            // Redirect naar de Tikkie-betaallink (hier kun je een echte link invullen)
+            var tikkieLink = "https://tikkie.me/pay/some-tikkie-id";
+            window.location.href = tikkieLink;
+        });
+    </script>
+
 </body>
 </html>
