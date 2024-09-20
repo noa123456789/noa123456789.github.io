@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winkel </title>
+    <title>Winkel met Admin Console</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -109,14 +109,23 @@
     </div>
 
     <script>
-        // Event listener voor de koopknoppen
-        document.getElementById('koop-knop-1').addEventListener('click', function() {
-            document.getElementById('checkout-form').style.display = 'block';
-        });
+        // Laad de opgeslagen instellingen (indien aanwezig) uit localStorage bij het laden van de pagina
+        window.onload = function() {
+            if (localStorage.getItem('shopTitle')) {
+                document.getElementById('shop-title').textContent = localStorage.getItem('shopTitle');
+                document.getElementById('admin-title-text').value = localStorage.getItem('shopTitle');
+            }
 
-        document.getElementById('koop-knop-2').addEventListener('click', function() {
-            document.getElementById('checkout-form').style.display = 'block';
-        });
+            if (localStorage.getItem('titleColor')) {
+                document.getElementById('shop-title').style.color = localStorage.getItem('titleColor');
+                document.getElementById('admin-title-color').value = localStorage.getItem('titleColor');
+            }
+
+            if (localStorage.getItem('bgColor')) {
+                document.body.style.backgroundColor = localStorage.getItem('bgColor');
+                document.getElementById('admin-bg-color').value = localStorage.getItem('bgColor');
+            }
+        }
 
         // Admin login functionaliteit
         document.getElementById('admin-login').addEventListener('click', function() {
@@ -129,7 +138,7 @@
             }
         });
 
-        // Functie om admin wijzigingen door te voeren
+        // Functie om admin wijzigingen door te voeren en op te slaan in localStorage
         document.getElementById('apply-changes').addEventListener('click', function() {
             // Haal de nieuwe waarden op
             var newTitleText = document.getElementById('admin-title-text').value;
@@ -145,7 +154,12 @@
             // Wijzig de achtergrondkleur van de pagina
             document.body.style.backgroundColor = newBgColor;
 
-            alert('Wijzigingen succesvol toegepast!');
+            // Sla de wijzigingen op in localStorage
+            localStorage.setItem('shopTitle', newTitleText);
+            localStorage.setItem('titleColor', newTitleColor);
+            localStorage.setItem('bgColor', newBgColor);
+
+            alert('Wijzigingen succesvol toegepast en opgeslagen!');
         });
     </script>
 
