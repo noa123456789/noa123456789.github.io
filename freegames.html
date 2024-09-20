@@ -19,7 +19,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             text-align: center;
         }
         .button {
@@ -38,7 +38,6 @@
             background-color: #218838;
         }
         form {
-            display: none;
             margin-top: 20px;
         }
         input {
@@ -47,6 +46,13 @@
             margin-bottom: 10px;
             border-radius: 4px;
             border: 1px solid #ccc;
+        }
+        #admin-section {
+            display: none;
+            margin-top: 20px;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
         }
         .hidden {
             display: none;
@@ -74,9 +80,24 @@
 
             <button type="submit" class="button">Betaal met Tikkie</button>
         </form>
+
+        <!-- Wachtwoord voor admin console -->
+        <h2>Admin Console</h2>
+        <label for="admin-password">Voer Admin Wachtwoord in:</label>
+        <input type="password" id="admin-password" placeholder="Wachtwoord">
+        <button class="button" id="admin-login">Inloggen</button>
+
+        <!-- Admin Console Sectie -->
+        <div id="admin-section">
+            <h3>Admin Console</h3>
+            <p>Wijzig hier de tekst of voer andere admin taken uit.</p>
+            <textarea id="admin-text" rows="5" cols="40">Voer hier admin tekst in...</textarea>
+            <button class="button" onclick="saveAdminChanges()">Opslaan</button>
+        </div>
     </div>
 
     <script>
+        // Event listener voor de koopknoppen
         document.getElementById('koop-knop-1').addEventListener('click', function() {
             document.getElementById('checkout-form').style.display = 'block';
         });
@@ -85,20 +106,23 @@
             document.getElementById('checkout-form').style.display = 'block';
         });
 
-        document.getElementById('checkout-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Haal de ingevulde gegevens op
-            var email = document.getElementById('email').value;
-            var adres = document.getElementById('adres').value;
-            var telefoon = document.getElementById('telefoon').value;
-
-            // Controleer of de velden correct zijn ingevuld (optioneel, al verplicht door HTML)
-
-            // Redirect naar de Tikkie-betaallink (hier kun je een echte link invullen)
-            var tikkieLink = "https://tikkie.me/pay/vv09qc13pc3g5s3rhji3";
-            window.location.href = tikkieLink;
+        // Admin login functionaliteit
+        document.getElementById('admin-login').addEventListener('click', function() {
+            var password = document.getElementById('admin-password').value;
+            
+            if (password === '2008') {
+                document.getElementById('admin-section').style.display = 'block';
+            } else {
+                alert('Onjuist wachtwoord, probeer opnieuw.');
+            }
         });
+
+        // Functie om admin wijzigingen op te slaan (eventueel verdere acties hier toevoegen)
+        function saveAdminChanges() {
+            var adminText = document.getElementById('admin-text').value;
+            alert('Admin wijzigingen opgeslagen: ' + adminText);
+            // Hier zou je de wijzigingen eventueel kunnen opslaan in localStorage of naar een backend sturen
+        }
     </script>
 
 </body>
