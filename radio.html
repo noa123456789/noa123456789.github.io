@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio NL</title>
     <style>
+        /* Styles voor de zijmenu en hoofdinhoud */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f0f0f0;
@@ -13,7 +14,6 @@
             display: flex;
         }
 
-        /* Zijmenu styling */
         .sidebar {
             width: 250px;
             background-color: #333;
@@ -53,15 +53,10 @@
             background-color: #555;
         }
 
-        /* Container styling for main content */
         .container {
             margin-left: 270px;
             padding: 20px;
             flex-grow: 1;
-        }
-
-        .container h1 {
-            color: #333;
         }
 
         .radio-station-list {
@@ -156,6 +151,19 @@
             loadStationsFromLocalStorage();
         });
 
+        // Functie om een radiostation te selecteren en af te spelen
+        function selectStation(stationUrl, stationName) {
+            var radioPlayer = document.getElementById('radioPlayer');
+            document.getElementById('selectedStationName').innerText = stationName + ' Radio';
+            radioPlayer.src = stationUrl;
+            radioPlayer.load();
+            radioPlayer.play().catch(function (error) {
+                console.error("Autoplay is geblokkeerd door de browser: ", error);
+                alert("Klik op de afspeelknop om de radio te starten.");
+            });
+        }
+
+        // Functie om een nieuw radiostation toe te voegen
         function addStation() {
             var stationName = document.getElementById('newStationName').value;
             var stationURL = document.getElementById('newStationURL').value;
