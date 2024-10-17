@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spraak Notitie</title>
+    <title>Spraak Notitie met HTML Uitvoering</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            background-color: #f4f4f9;
+            background-color: #e0e0e0; /* Grijs hoofdmenu */
         }
         #sidebar {
             width: 250px;
-            background-color: #2c3e50;
+            background-color: #3a3a3a; /* Lichtzwarte menubalk */
             color: #ecf0f1;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            height: 100vh; /* Volledige hoogte van het scherm */
+            position: fixed; /* Vast aan de linkerkant */
         }
         #content {
             flex-grow: 1;
             padding: 20px;
+            margin-left: 270px; /* Ruimte creëren voor de vaste zijbalk */
         }
         h1 {
             font-size: 24px;
@@ -51,33 +54,17 @@
         button:hover {
             background-color: #2980b9;
         }
-        .folder, .note {
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-            margin: 5px 0;
-            transition: background-color 0.2s;
-        }
-        .folder:hover, .note:hover {
-            background-color: #34495e;
-        }
-        .selected {
-            background-color: #1abc9c;
-        }
         .label {
             margin: 10px 0 5px;
             font-weight: bold;
         }
-        #fontSize, #textColor {
+        iframe {
             width: 100%;
-            margin-top: 10px;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #ecf0f1;
+            height: 300px;
             border: 1px solid #bdc3c7;
             border-radius: 4px;
+            margin-top: 20px;
+            background-color: white;
         }
     </style>
 </head>
@@ -93,66 +80,28 @@
 
     <div id="content">
         <h1 id="noteTitle">Nieuwe Notitie</h1>
-        <textarea id="textArea" placeholder="Spreek hier iets in..."></textarea><br>
+        <textarea id="textArea" placeholder="Voer hier je tekst of HTML in..."></textarea><br>
 
-        <label class="label" for="fontSize">Tekstgrootte:</label>
-        <input type="number" id="fontSize" value="16" min="8" max="72">px<br>
-
-        <label class="label" for="textColor">Tekstkleur:</label>
-        <input type="color" id="textColor" value="#000000"><br>
-
-        <button id="startRecognition">Start Spraakherkenning</button>
-        <button id="stopRecognition">Stop Spraakherkenning</button>
+        <button id="viewHtml">Bekijk als HTML</button>
         <button id="saveNote">Opslaan</button>
         <button id="loadNote">Laad Notitie</button>
-        <button id="calculate">Bereken</button>
 
-        <div id="result"></div>
+        <iframe id="htmlOutput" title="HTML Output"></iframe>
     </div>
 
     <script>
-        const startRecognitionButton = document.getElementById('startRecognition');
-        const stopRecognitionButton = document.getElementById('stopRecognition');
         const textArea = document.getElementById('textArea');
-        const fontSizeInput = document.getElementById('fontSize');
-        const textColorInput = document.getElementById('textColor');
+        const htmlOutput = document.getElementById('htmlOutput');
         const saveNoteButton = document.getElementById('saveNote');
         const loadNoteButton = document.getElementById('loadNote');
-        const folderList = document.getElementById('folderList');
-        const noteList = document.getElementById('noteList');
+        const viewHtmlButton = document.getElementById('viewHtml');
         const noteTitle = document.getElementById('noteTitle');
 
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-
-        recognition.interimResults = true; // Zorg ervoor dat tussentijdse resultaten worden weergegeven
-        recognition.onresult = function(event) {
-            const transcript = event.results[event.results.length - 1][0].transcript;
-            textArea.value += transcript + ' ';
+        viewHtmlButton.onclick = function() {
+            const htmlContent = textArea.value;
+            htmlOutput.srcdoc = htmlContent; // Voer HTML-inhoud veilig uit in iframe
         };
 
-        recognition.onerror = function(event) {
-            console.error("Spraakherkenning fout:", event.error);
-        };
-
-        startRecognitionButton.onclick = function() {
-            recognition.start();
-        };
-
-        stopRecognitionButton.onclick = function() {
-            recognition.stop();
-        };
-
-        // Verander tekstgrootte en kleur
-        fontSizeInput.oninput = function() {
-            textArea.style.fontSize = fontSizeInput.value + 'px';
-        };
-
-        textColorInput.oninput = function() {
-            textArea.style.color = textColorInput.value;
-        };
-
-        // Opslaan van de notitie
         saveNoteButton.onclick = function() {
             const currentNoteKey = noteTitle.dataset.noteKey;
             if (currentNoteKey) {
@@ -163,7 +112,6 @@
             }
         };
 
-        // Laad een opgeslagen notitie
         loadNoteButton.onclick = function() {
             const selectedNote = document.querySelector('.note.selected');
             if (selectedNote) {
@@ -178,7 +126,6 @@
             }
         };
 
-        // Laad de mappen en notities
         function loadFolders() {
             const folders = Object.keys(localStorage).reduce((acc, key) => {
                 const folderName = key.split('/')[0];
@@ -221,16 +168,14 @@
             });
         }
 
-        // Nieuwe map toevoegen
         document.getElementById('addFolder').onclick = function() {
             const folderName = prompt("Geef een naam voor de nieuwe map:");
             if (folderName) {
-                localStorage.setItem(folderName + '/dummy', ''); // Maak de map aan door een dummy-item toe te voegen
+                localStorage.setItem(folderName + '/dummy', ''); 
                 loadFolders();
             }
         };
 
-        // Nieuwe notitie toevoegen
         document.getElementById('addNote').onclick = function() {
             const selectedFolder = document.querySelector('.folder.selected');
             if (selectedFolder) {
@@ -238,7 +183,7 @@
                 if (noteName) {
                     const folderName = selectedFolder.dataset.folder;
                     const noteKey = `${folderName}/${noteName}`;
-                    localStorage.setItem(noteKey, ''); // Maak een lege notitie aan
+                    localStorage.setItem(noteKey, '');
                     loadNotes(folderName);
                     alert(`Notitie '${noteName}' is aangemaakt in '${folderName}'!`);
                 }
@@ -247,21 +192,7 @@
             }
         };
 
-        // Rekenoptie
-        const calculateButton = document.getElementById('calculate');
-        calculateButton.onclick = function() {
-            const numbers = prompt("Voer twee getallen in, gescheiden door een komma (bijv. 3,4):");
-            const numArray = numbers.split(',').map(Number);
-            if (numArray.length === 2 && numArray.every(num => !isNaN(num))) {
-                const sum = numArray[0] + numArray[1];
-                document.getElementById('result').innerText = `De som is: ${sum}`;
-            } else {
-                alert("Voer geldige getallen in.");
-            }
-        };
-
-        // Laad mappen en notities bij het opstarten
-        loadFolders();
+        loadFolders(); // Initialiseer bij het laden van de pagina
     </script>
 </body>
 </html>
