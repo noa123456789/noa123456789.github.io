@@ -58,6 +58,7 @@
         <input type="color" id="textColor" value="#000000"><br><br>
 
         <button id="startRecognition">Start Spraakherkenning</button>
+        <button id="stopRecognition">Stop Spraakherkenning</button>
         <button id="saveNote">Opslaan</button>
         <button id="loadNote">Laad Notitie</button>
         <button id="calculate">Bereken</button>
@@ -67,6 +68,7 @@
 
     <script>
         const startRecognitionButton = document.getElementById('startRecognition');
+        const stopRecognitionButton = document.getElementById('stopRecognition');
         const textArea = document.getElementById('textArea');
         const fontSizeInput = document.getElementById('fontSize');
         const textColorInput = document.getElementById('textColor');
@@ -79,8 +81,9 @@
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
 
+        recognition.interimResults = true; // Zorg ervoor dat tussentijdse resultaten worden weergegeven
         recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
+            const transcript = event.results[event.results.length - 1][0].transcript;
             textArea.value += transcript + ' ';
         };
 
@@ -90,6 +93,10 @@
 
         startRecognitionButton.onclick = function() {
             recognition.start();
+        };
+
+        stopRecognitionButton.onclick = function() {
+            recognition.stop();
         };
 
         // Verander tekstgrootte en kleur
