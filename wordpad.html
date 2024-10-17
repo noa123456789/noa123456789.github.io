@@ -58,13 +58,24 @@
             margin: 10px 0 5px;
             font-weight: bold;
         }
-        iframe {
-            width: 100%;
-            height: 300px;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            margin-top: 20px;
-            background-color: white;
+        .item-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .remove-button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -85,6 +96,8 @@
         <button id="viewHtml">Bekijk als HTML</button>
         <button id="saveNote">Opslaan</button>
         <button id="loadNote">Laad Notitie</button>
+        <button id="downloadTxt">Download als TXT</button>
+        <button id="downloadHtml">Download als HTML</button>
 
         <iframe id="htmlOutput" title="HTML Output"></iframe>
     </div>
@@ -95,6 +108,8 @@
         const saveNoteButton = document.getElementById('saveNote');
         const loadNoteButton = document.getElementById('loadNote');
         const viewHtmlButton = document.getElementById('viewHtml');
+        const downloadTxtButton = document.getElementById('downloadTxt');
+        const downloadHtmlButton = document.getElementById('downloadHtml');
         const noteTitle = document.getElementById('noteTitle');
 
         viewHtmlButton.onclick = function() {
@@ -126,6 +141,30 @@
             }
         };
 
+        downloadTxtButton.onclick = function() {
+            const blob = new Blob([textArea.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${noteTitle.innerText}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        downloadHtmlButton.onclick = function() {
+            const blob = new Blob([textArea.value], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${noteTitle.innerText}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
         function loadFolders() {
             const folders = Object.keys(localStorage).reduce((acc, key) => {
                 const folderName = key.split('/')[0];
@@ -138,14 +177,36 @@
             folderList.innerHTML = '';
             folders.forEach(folder => {
                 const div = document.createElement('div');
-                div.innerText = folder;
-                div.className = 'folder';
-                div.dataset.folder = folder;
-                div.onclick = function() {
+                div.className = 'item-container';
+
+                const folderName = document.createElement('span');
+                folderName.innerText = folder;
+                folderName.className = 'folder';
+                folderName.dataset.folder = folder;
+                folderName.onclick = function() {
                     document.querySelectorAll('.folder').forEach(f => f.classList.remove('selected'));
                     this.classList.add('selected');
                     loadNotes(folder);
                 };
+
+                const removeButton = document.createElement('button');
+                removeButton.innerText = '+';
+                removeButton.className = 'remove-button';
+                removeButton.onclick = function(event) {
+                    event.stopPropagation();
+                    if (confirm(`Weet je zeker dat je de map '${folder}' en alle bijbehorende notities wilt verwijderen?`)) {
+                        Object.keys(localStorage).forEach(key => {
+                            if (key.startsWith(folder + '/')) {
+                                localStorage.removeItem(key);
+                            }
+                        });
+                        loadFolders();
+                        noteList.innerHTML = ''; // Wis notities als de map verwijderd is
+                    }
+                };
+
+                div.appendChild(folderName);
+                div.appendChild(removeButton);
                 folderList.appendChild(div);
             });
         }
@@ -157,13 +218,30 @@
             notes.forEach(note => {
                 const noteName = note.split('/')[1];
                 const div = document.createElement('div');
-                div.innerText = noteName;
-                div.className = 'note';
-                div.dataset.noteKey = note;
-                div.onclick = function() {
+                div.className = 'item-container';
+
+                const noteTitle = document.createElement('span');
+                noteTitle.innerText = noteName;
+                noteTitle.className = 'note';
+                noteTitle.dataset.noteKey = note;
+                noteTitle.onclick = function() {
                     document.querySelectorAll('.note').forEach(n => n.classList.remove('selected'));
                     this.classList.add('selected');
                 };
+
+                const removeButton = document.createElement('button');
+                removeButton.innerText = '+';
+                removeButton.className = 'remove-button';
+                removeButton.onclick = function(event) {
+                    event.stopPropagation();
+                    if (confirm(`Weet je zeker dat je de notitie '${noteName}' wilt verwijderen?`)) {
+                        localStorage.removeItem(note);
+                        loadNotes(folderName);
+                    }
+                };
+
+                div.appendChild(noteTitle);
+                div.appendChild(removeButton);
                 noteList.appendChild(div);
             });
         }
