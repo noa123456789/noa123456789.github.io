@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spraak Notitie</title>
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #sidebar {
+            width: 200px;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+        }
+        #content {
+            flex-grow: 1;
+            padding: 10px;
+        }
+        #textArea {
+            width: 100%;
+            height: 200px;
+            font-size: 16px;
+            color: black;
+        }
+        .folder, .note {
+            cursor: pointer;
+            padding: 5px;
+        }
+        .folder:hover, .note:hover {
+            background-color: #f0f0f0;
+        }
+        .selected {
+            background-color: #d0e0ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h3>Mappen</h3>
+        <div id="folderList"></div>
+        <button id="addFolder">Nieuwe Map</button>
+        <h3>Notities</h3>
+        <div id="noteList"></div>
+        <button id="addNote">Nieuwe Notitie</button>
+    </div>
+
+    <div id="content">
+        <h1 id="noteTitle">Nieuwe Notitie</h1>
+        <textarea id="textArea" placeholder="Spreek hier iets in..."></textarea><br>
+
+        <label for="fontSize">Tekstgrootte:</label>
+        <input type="number" id="fontSize" value="16" min="8" max="72">px<br><br>
+
+        <label for="textColor">Tekstkleur:</label>
+        <input type="color" id="textColor" value="#000000"><br><br>
+
+        <button id="startRecognition">Start Spraakherkenning</button>
+        <button id="saveNote">Opslaan</button>
+        <button id="loadNote">Laad Notitie</button>
+        <button id="calculate">Bereken</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const startRecognitionButton = document.getElementById('startRecognition');
+        const textArea = document.getElementById('textArea');
+        const fontSizeInput = document.getElementById('fontSize');
+        const textColorInput = document.getElementById('textColor');
+        const saveNoteButton = document.getElementById('saveNote');
+        const loadNoteButton = document.getElementById('loadNote');
+        const folderList = document.getElementById('folderList');
+        const noteList = document.getElementById('noteList');
+        const noteTitle = document.getElementById('noteTitle');
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            textArea.value += transcript + ' ';
+        };
+
+        recognition.onerror = function(event) {
+            console.error("Spraakherkenning fout:", event.error);
+        };
+
+        startRecognitionButton.onclick = function() {
+            recognition.start();
+        };
+
+        // Verander tekstgrootte en kleur
+        fontSizeInput.oninput = function() {
+            textArea.style.fontSize = fontSizeInput.value + 'px';
+        };
+
+        textColorInput.oninput = function() {
+            textArea.style.color = textColorInput.value;
+        };
+
+        // Opslaan van de notitie
+        saveNoteButton.onclick = function() {
+            const currentNoteKey = noteTitle.dataset.noteKey;
+            if (currentNoteKey) {
+                localStorage.setItem(currentNoteKey, textArea.value);
+                alert(`Notitie '${noteTitle.innerText}' is opgeslagen!`);
+            } else {
+                alert("Geen notitie geladen om op te slaan.");
+            }
+        };
+
+        // Laad een opgeslagen notitie
+        loadNoteButton.onclick = function() {
+            const selectedNote = document.querySelector('.note.selected');
+            if (selectedNote) {
+                const noteKey = selectedNote.dataset.noteKey;
+                const savedNote = localStorage.getItem(noteKey);
+                noteTitle.innerText = selectedNote.innerText;
+                noteTitle.dataset.noteKey = noteKey;
+                textArea.value = savedNote || '';
+                alert(`Notitie '${selectedNote.innerText}' is geladen!`);
+            } else {
+                alert("Selecteer een notitie om te laden.");
+            }
+        };
+
+        // Laad de mappen en notities
+        function loadFolders() {
+            const folders = Object.keys(localStorage).reduce((acc, key) => {
+                const folderName = key.split('/')[0];
+                if (!acc.includes(folderName)) {
+                    acc.push(folderName);
+                }
+                return acc;
+            }, []);
+            
+            folderList.innerHTML = '';
+            folders.forEach(folder => {
+                const div = document.createElement('div');
+                div.innerText = folder;
+                div.className = 'folder';
+                div.dataset.folder = folder;
+                div.onclick = function() {
+                    document.querySelectorAll('.folder').forEach(f => f.classList.remove('selected'));
+                    this.classList.add('selected');
+                    loadNotes(folder);
+                };
+                folderList.appendChild(div);
+            });
+        }
+
+        function loadNotes(folderName) {
+            const notes = Object.keys(localStorage).filter(key => key.startsWith(folderName + '/'));
+
+            noteList.innerHTML = '';
+            notes.forEach(note => {
+                const noteName = note.split('/')[1];
+                const div = document.createElement('div');
+                div.innerText = noteName;
+                div.className = 'note';
+                div.dataset.noteKey = note;
+                div.onclick = function() {
+                    document.querySelectorAll('.note').forEach(n => n.classList.remove('selected'));
+                    this.classList.add('selected');
+                };
+                noteList.appendChild(div);
+            });
+        }
+
+        // Nieuwe map toevoegen
+        document.getElementById('addFolder').onclick = function() {
+            const folderName = prompt("Geef een naam voor de nieuwe map:");
+            if (folderName) {
+                localStorage.setItem(folderName + '/dummy', ''); // Maak de map aan door een dummy-item toe te voegen
+                loadFolders();
+            }
+        };
+
+        // Nieuwe notitie toevoegen
+        document.getElementById('addNote').onclick = function() {
+            const selectedFolder = document.querySelector('.folder.selected');
+            if (selectedFolder) {
+                const noteName = prompt("Geef een naam voor de nieuwe notitie:");
+                if (noteName) {
+                    const folderName = selectedFolder.dataset.folder;
+                    const noteKey = `${folderName}/${noteName}`;
+                    localStorage.setItem(noteKey, ''); // Maak een lege notitie aan
+                    loadNotes(folderName);
+                    alert(`Notitie '${noteName}' is aangemaakt in '${folderName}'!`);
+                }
+            } else {
+                alert("Selecteer een map om een notitie aan toe te voegen.");
+            }
+        };
+
+        // Rekenoptie
+        const calculateButton = document.getElementById('calculate');
+        calculateButton.onclick = function() {
+            const numbers = prompt("Voer twee getallen in, gescheiden door een komma (bijv. 3,4):");
+            const numArray = numbers.split(',').map(Number);
+            if (numArray.length === 2 && numArray.every(num => !isNaN(num))) {
+                const sum = numArray[0] + numArray[1];
+                document.getElementById('result').innerText = `De som is: ${sum}`;
+            } else {
+                alert("Voer geldige getallen in.");
+            }
+        };
+
+        // Laad mappen en notities bij het opstarten
+        loadFolders();
+    </script>
+</body>
+</html>
