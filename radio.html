@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio NL</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .radio-station-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .radio-logo {
+            width: 120px;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .radio-logo:hover {
+            transform: scale(1.1);
+        }
+
+        #radioPlayer {
+            margin-top: 20px;
+        }
+
+        .add-station-form {
+            margin-top: 20px;
+        }
+
+        .add-station-form input {
+            padding: 10px;
+            margin: 5px;
+            width: calc(50% - 22px);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .add-station-form button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .add-station-form button:hover {
+            background-color: #4cae4c;
+        }
+
+        .now-playing {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 24px; /* Default size */
+        }
+
+        .song-known {
+            color: #28a745; /* Green color for known songs */
+        }
+
+        .song-unknown {
+            color: black; /* Black color for unknown songs */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 id="selectedStationName">Radio NL</h1>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Zoek naar een radiostation..." onkeyup="filterStations()">
+        </div>
+
+        <div class="radio-station-list" id="radioStationList">
+            <img src="sky_logo.jpg" alt="Sky Radio Logo" class="radio-logo"
+                onclick="selectStation('https://www.mp3streams.nl/zender/skyradio/stream/8-mp3-128', 'Sky Radio')"
+                data-station-name="Sky Radio">
+            <img src="qmusic_logo.jpg" alt="Qmusic Logo" class="radio-logo"
+                onclick="selectStation('https://www.mp3streams.nl/zender/qmusic/stream/20-aac-64', 'Qmusic')"
+                data-station-name="Qmusic">
+            <img src="538_logo.jpg" alt="Radio 538 Logo" class="radio-logo"
+                onclick="selectStation('https://www.mp3streams.nl/zender/radio-538/stream/4-mp3-128', 'Radio 538')"
+                data-station-name="Radio 538">
+            <img src="nporadio2_logo.jpg" alt="NPO Radio 2 Logo" class="radio-logo"
+                onclick="selectStation('https://www.mp3streams.nl/zender/npo-radio-2/stream/3-aac-64', 'NPO Radio 2')"
+                data-station-name="NPO Radio 2">
+            <img src="npo3.jpg" alt="NPO Radio 3 Logo" class="radio-logo"
+                onclick="selectStation('https://www.mp3streams.nl/zender/3fm/stream/7-aac-64', 'NPO Radio 3')"
+                data-station-name="NPO Radio 3">
+        </div>
+
+        <div class="add-station-form">
+            <h3>Voeg een nieuw radiostation toe</h3>
+            <input type="text" id="newStationName" placeholder="Station naam">
+            <input type="text" id="newStationURL" placeholder="Station URL">
+            <button onclick="addStation()">Toevoegen</button>
+        </div>
+
+        <audio id="radioPlayer" controls>
+            Je browser ondersteunt geen audio element.
+        </audio>
+
+        <div class="now-playing" id="nowPlaying">Huidig nummer: <span id="currentSong" class="song-unknown">N/A</span></div>
+    </div>
+
+    <script>
+        function selectStation(stationUrl, stationName) {
+            var radioPlayer = document.getElementById('radioPlayer');
+            document.getElementById('selectedStationName').innerText = stationName + ' Radio';
+            radioPlayer.src = stationUrl;
+            radioPlayer.load();
+            radioPlayer.play();
+        }
+
+        function filterStations() {
+            var input = document.getElementById('searchInput');
+            var filter = input.value.toLowerCase();
+            var stationList = document.getElementById('radioStationList');
+            var stations = stationList.getElementsByClassName('radio-logo');
+
+            for (var i = 0; i < stations.length; i++) {
+                var stationName = stations[i].getAttribute('data-station-name').toLowerCase();
+                if (stationName.includes(filter)) {
+                    stations[i].style.display = '';
+                } else {
+                    stations[i].style.display = 'none';
+                }
+            }
+        }
+
+        function addStation() {
+            var stationName = document.getElementById('newStationName').value;
+            var stationURL = document.getElementById('newStationURL').value;
+
+            if (stationName && stationURL) {
+                var newLogo = document.createElement('img');
+                newLogo.src = 'placeholder_logo.png'; // Placeholder logo for user-added station
+                newLogo.alt = stationName + ' Logo';
+                newLogo.className = 'radio-logo';
+                newLogo.setAttribute('onclick', `selectStation('${stationURL}', '${stationName}')`);
+                newLogo.setAttribute('data-station-name', stationName);
+                
+                document.getElementById('radioStationList').appendChild(newLogo);
+                document.getElementById('newStationName').value = '';
+                document.getElementById('newStationURL').value = '';
+            } else {
+                alert('Vul alstublieft zowel de station naam als de URL in.');
+            }
+        }
+
+        document.getElementById('radioPlayer').addEventListener('loadedmetadata', function () {
+            this.play();
+        });
+
+        document.getElementById('radioPlayer').addEventListener('play', function () {
+            var radioPlayer = document.getElementById('radioPlayer');
+            setInterval(() => {
+                // Simulating song title retrieval
+                let songTitle = Math.random() < 0.5 ? "Voorbeeldnummer" : null; // Randomly simulate a known or unknown song
+
+                if (songTitle) {
+                    document.getElementById('currentSong').innerText = songTitle;
+                    document.getElementById('currentSong').className = 'song-known'; // Change class for known song
+                } else {
+                    document.getElementById('currentSong').innerText = "N/A";
+                    document.getElementById('currentSong').className = 'song-unknown'; // Change class for unknown song
+                }
+            }, 10000); // Update every 10 seconds
+        });
+
+        // Autoplay the first station when the page loads.
+        document.addEventListener('DOMContentLoaded', function () {
+            var radioPlayer = document.getElementById('radioPlayer');
+            radioPlayer.play();
+        });
+    </script>
+
+</body>
+
+</html>
