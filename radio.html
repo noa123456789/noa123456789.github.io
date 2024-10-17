@@ -8,37 +8,60 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            text-align: center;
             background-color: #f0f0f0;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .search-bar {
+            margin: 0;
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
         }
 
-        .search-bar input {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
+        /* Zijmenu styling */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .sidebar input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: none;
             border-radius: 5px;
-            outline: none;
+            font-size: 16px;
+        }
+
+        .sidebar .station-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar .station-list li {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #555;
+        }
+
+        .sidebar .station-list li:hover {
+            background-color: #555;
+        }
+
+        /* Container styling for main content */
+        .container {
+            margin-left: 270px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .container h1 {
+            color: #333;
         }
 
         .radio-station-list {
@@ -60,62 +83,42 @@
             transform: scale(1.1);
         }
 
-        #radioPlayer {
-            margin-top: 20px;
-        }
-
-        .add-station-form {
-            margin-top: 20px;
-        }
-
-        .add-station-form input {
-            padding: 10px;
-            margin: 5px;
-            width: calc(50% - 22px);
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
+        .add-station-form input,
         .add-station-form button {
-            padding: 10px;
-            margin: 5px;
-            border: none;
-            background-color: #5cb85c;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .add-station-form button:hover {
-            background-color: #4cae4c;
+            width: calc(50% - 22px);
         }
 
         .now-playing {
             margin-top: 20px;
             font-weight: bold;
-            font-size: 24px; /* Default size */
+            font-size: 24px;
         }
 
         .song-known {
-            color: #28a745; /* Green color for known songs */
+            color: #28a745;
         }
 
         .song-unknown {
-            color: black; /* Black color for unknown songs */
+            color: black;
         }
     </style>
 </head>
 
 <body>
 
+    <!-- Zijmenu -->
+    <div class="sidebar">
+        <h2>Zoek Radiostation</h2>
+        <input type="text" id="menuSearchInput" placeholder="Zoek station..." onkeyup="filterMenuStations()">
+        <ul class="station-list" id="menuStationList"></ul>
+    </div>
+
+    <!-- Hoofdinhoud -->
     <div class="container">
         <h1 id="selectedStationName">Radio NL</h1>
 
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Zoek naar een radiostation..." onkeyup="filterStations()">
-        </div>
-
         <div class="radio-station-list" id="radioStationList">
+            <!-- Vooraf ingestelde radiozenders -->
             <img src="sky_logo.jpg" alt="Sky Radio Logo" class="radio-logo"
                 onclick="selectStation('https://www.mp3streams.nl/zender/skyradio/stream/8-mp3-128', 'Sky Radio')"
                 data-station-name="Sky Radio">
@@ -148,43 +151,19 @@
     </div>
 
     <script>
-        function selectStation(stationUrl, stationName) {
-            var radioPlayer = document.getElementById('radioPlayer');
-            document.getElementById('selectedStationName').innerText = stationName + ' Radio';
-            radioPlayer.src = stationUrl;
-            radioPlayer.load();
-            radioPlayer.play();
-        }
-
-        function filterStations() {
-            var input = document.getElementById('searchInput');
-            var filter = input.value.toLowerCase();
-            var stationList = document.getElementById('radioStationList');
-            var stations = stationList.getElementsByClassName('radio-logo');
-
-            for (var i = 0; i < stations.length; i++) {
-                var stationName = stations[i].getAttribute('data-station-name').toLowerCase();
-                if (stationName.includes(filter)) {
-                    stations[i].style.display = '';
-                } else {
-                    stations[i].style.display = 'none';
-                }
-            }
-        }
+        // Laad stations op uit localStorage bij het laden van de pagina
+        document.addEventListener('DOMContentLoaded', function () {
+            loadStationsFromLocalStorage();
+        });
 
         function addStation() {
             var stationName = document.getElementById('newStationName').value;
             var stationURL = document.getElementById('newStationURL').value;
 
             if (stationName && stationURL) {
-                var newLogo = document.createElement('img');
-                newLogo.src = 'placeholder_logo.png'; // Placeholder logo for user-added station
-                newLogo.alt = stationName + ' Logo';
-                newLogo.className = 'radio-logo';
-                newLogo.setAttribute('onclick', `selectStation('${stationURL}', '${stationName}')`);
-                newLogo.setAttribute('data-station-name', stationName);
-                
-                document.getElementById('radioStationList').appendChild(newLogo);
+                addStationToList(stationName, stationURL);
+                saveStationToLocalStorage(stationName, stationURL);
+
                 document.getElementById('newStationName').value = '';
                 document.getElementById('newStationURL').value = '';
             } else {
@@ -192,33 +171,50 @@
             }
         }
 
-        document.getElementById('radioPlayer').addEventListener('loadedmetadata', function () {
-            this.play();
-        });
+        function addStationToList(stationName, stationURL) {
+            var newLogo = document.createElement('img');
+            newLogo.src = 'placeholder_logo.png';
+            newLogo.alt = stationName + ' Logo';
+            newLogo.className = 'radio-logo';
+            newLogo.setAttribute('onclick', `selectStation('${stationURL}', '${stationName}')`);
+            newLogo.setAttribute('data-station-name', stationName);
 
-        document.getElementById('radioPlayer').addEventListener('play', function () {
-            var radioPlayer = document.getElementById('radioPlayer');
-            setInterval(() => {
-                // Simulating song title retrieval
-                let songTitle = Math.random() < 0.5 ? "Voorbeeldnummer" : null; // Randomly simulate a known or unknown song
+            document.getElementById('radioStationList').appendChild(newLogo);
 
-                if (songTitle) {
-                    document.getElementById('currentSong').innerText = songTitle;
-                    document.getElementById('currentSong').className = 'song-known'; // Change class for known song
-                } else {
-                    document.getElementById('currentSong').innerText = "N/A";
-                    document.getElementById('currentSong').className = 'song-unknown'; // Change class for unknown song
-                }
-            }, 10000); // Update every 10 seconds
-        });
+            // Voeg station ook toe aan het zijmenu
+            var menuItem = document.createElement('li');
+            menuItem.textContent = stationName;
+            menuItem.onclick = function () {
+                selectStation(stationURL, stationName);
+            };
+            document.getElementById('menuStationList').appendChild(menuItem);
+        }
 
-        // Autoplay the first station when the page loads.
-        document.addEventListener('DOMContentLoaded', function () {
-            var radioPlayer = document.getElementById('radioPlayer');
-            radioPlayer.play();
-        });
+        function saveStationToLocalStorage(stationName, stationURL) {
+            let stations = JSON.parse(localStorage.getItem('radioStations')) || [];
+            stations.push({ name: stationName, url: stationURL });
+            localStorage.setItem('radioStations', JSON.stringify(stations));
+        }
+
+        function loadStationsFromLocalStorage() {
+            let stations = JSON.parse(localStorage.getItem('radioStations')) || [];
+            stations.forEach(station => {
+                addStationToList(station.name, station.url);
+            });
+        }
+
+        function filterMenuStations() {
+            var input = document.getElementById('menuSearchInput');
+            var filter = input.value.toLowerCase();
+            var stationList = document.getElementById('menuStationList');
+            var stations = stationList.getElementsByTagName('li');
+
+            for (var i = 0; i < stations.length; i++) {
+                var stationName = stations[i].textContent.toLowerCase();
+                stations[i].style.display = stationName.includes(filter) ? '' : 'none';
+            }
+        }
     </script>
-
 </body>
 
 </html>
