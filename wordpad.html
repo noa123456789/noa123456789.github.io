@@ -4,36 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spraak Notitie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: #f4f4f9;
         }
         #sidebar {
-            width: 200px;
-            border-right: 1px solid #ccc;
-            padding: 10px;
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
         #content {
             flex-grow: 1;
-            padding: 10px;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #2c3e50;
         }
         #textArea {
             width: 100%;
             height: 200px;
             font-size: 16px;
             color: black;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            resize: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
         }
         .folder, .note {
             cursor: pointer;
-            padding: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+            transition: background-color 0.2s;
         }
         .folder:hover, .note:hover {
-            background-color: #f0f0f0;
+            background-color: #34495e;
         }
         .selected {
-            background-color: #d0e0ff;
+            background-color: #1abc9c;
+        }
+        .label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        #fontSize, #textColor {
+            width: 100%;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -51,11 +95,11 @@
         <h1 id="noteTitle">Nieuwe Notitie</h1>
         <textarea id="textArea" placeholder="Spreek hier iets in..."></textarea><br>
 
-        <label for="fontSize">Tekstgrootte:</label>
-        <input type="number" id="fontSize" value="16" min="8" max="72">px<br><br>
+        <label class="label" for="fontSize">Tekstgrootte:</label>
+        <input type="number" id="fontSize" value="16" min="8" max="72">px<br>
 
-        <label for="textColor">Tekstkleur:</label>
-        <input type="color" id="textColor" value="#000000"><br><br>
+        <label class="label" for="textColor">Tekstkleur:</label>
+        <input type="color" id="textColor" value="#000000"><br>
 
         <button id="startRecognition">Start Spraakherkenning</button>
         <button id="stopRecognition">Stop Spraakherkenning</button>
