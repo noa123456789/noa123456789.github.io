@@ -58,25 +58,6 @@
             margin: 10px 0 5px;
             font-weight: bold;
         }
-        .item-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .remove-button {
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
     </style>
 </head>
 <body>
@@ -121,7 +102,9 @@
                 let interimTranscript = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
-                        textArea.value += event.results[i][0].transcript + ' ';
+                        let spokenText = event.results[i][0].transcript.trim();
+                        let correctedText = correctSpellingAndTranslate(spokenText);
+                        textArea.value += correctedText + ' ';
                     } else {
                         interimTranscript += event.results[i][0].transcript;
                     }
@@ -156,9 +139,21 @@
             }
         };
 
+        // Functie voor eenvoudige spellingscorrectie en vertaling
+        function correctSpellingAndTranslate(text) {
+            const dictionary = {
+                "hello": "hallo",
+                "goodbye": "vaarwel",
+                "thank you": "dank je",
+                "yes": "ja",
+                "no": "nee"
+                // Voeg hier meer woorden en vertalingen toe voor de correctie
+            };
+            return text.split(' ').map(word => dictionary[word.toLowerCase()] || word).join(' ');
+        }
+
         // Rest van de bestaande functies (voor mappen en notities) blijft hetzelfde
-        // Deze code laadt de mappen en notities bij het starten van de pagina.
-        loadFolders();
+        loadFolders(); // Initialiseer bij het laden van de pagina
     </script>
 </body>
 </html>
