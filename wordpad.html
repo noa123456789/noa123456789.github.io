@@ -68,6 +68,8 @@
         <h3>Notities</h3>
         <div id="noteList"></div>
         <button id="addNote">Nieuwe Notitie</button>
+        <h3>HTML Editor</h3>
+        <button id="openHtmlEditor">Open HTML-script editor</button> <!-- Knop toegevoegd voor HTML-editor -->
     </div>
 
     <div id="content">
@@ -90,7 +92,7 @@
         const startSpeechButton = document.getElementById('startSpeech');
         const stopSpeechButton = document.getElementById('stopSpeech');
         let recognition;
-        
+
         // Controleer of de Web Speech API wordt ondersteund
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
@@ -151,6 +153,11 @@
             };
             return text.split(' ').map(word => dictionary[word.toLowerCase()] || word).join(' ');
         }
+
+        // Event-handler voor het openen van de HTML-script editor
+        document.getElementById('openHtmlEditor').onclick = function() {
+            window.open('html-editor.html', '_blank'); // Opent de HTML-editor in een nieuw tabblad
+        };
 
         // Rest van de bestaande functies (voor mappen en notities) blijft hetzelfde
         loadFolders(); // Initialiseer bij het laden van de pagina
