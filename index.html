@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="NL-nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            background-color: #f8f8f8;
+            background-color: #121212;
         }
         header {
             background-color: #333;
@@ -23,16 +23,19 @@
         }
         .container {
             display: flex;
+            flex-direction: column;
         }
         .sidebar {
             width: 20%;
             background-color: #444;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            color: white;
         }
         .main-content {
             flex: 1;
             padding: 20px;
+            text-align: center;
         }
         .social-links {
             display: flex;
@@ -58,28 +61,28 @@
 
         /* Visitor Counter Styles */
         .visitor-counter {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin-top: 40px;
             padding: 20px;
-            background-color: #333;
+            background-color: #222;
             color: white;
             border-radius: 10px;
-            width: 50%;
-            margin-left: auto;
-            margin-right: auto;
+            display: inline-block;
+            text-align: center;
         }
 
         .visitor-counter img {
-            width: 200px;
+            width: 250px;
             height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         .visitor-counter span {
             font-size: 1.5em;
-            margin-left: 15px;
             font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            color: #ffcc00;
         }
     </style>
 </head>
