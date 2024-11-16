@@ -71,13 +71,6 @@
             border-radius: 4px;
             transition: background-color 0.3s;
         }
-        .buy-btn.blinking {
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { background-color: #4CAF50; }
-            50% { background-color: #FF0000; }
-        }
         .buy-btn:hover {
             background-color: #45a049;
         }
@@ -92,12 +85,6 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        .modal.show {
-            display: block;
-            opacity: 1;
         }
         .modal-content {
             background-color: #fff;
@@ -107,12 +94,6 @@
             width: 80%;
             max-width: 500px;
             text-align: center;
-            transform: scale(0.9);
-            animation: scaleUp 0.5s ease forwards;
-        }
-        @keyframes scaleUp {
-            0% { transform: scale(0.9); }
-            100% { transform: scale(1); }
         }
         .modal-content img {
             max-width: 100%;
@@ -156,24 +137,18 @@
                 <p>Intel i7 14700, RTX 4090, 64GB RAM, 2TB SSD opslag</p>
                 <p>Prijs: $3000</p>
                 <p>ID: 1</p>
-                <a href="https://forms.gle/NyoMFnv3uxMXoC9ZA" class="buy-btn" id="buyBtn1">Kopen</a>
+                <a href="https://forms.gle/NyoMFnv3uxMXoC9ZA" class="buy-btn">Kopen</a>
             </div>
 
             <!-- Product 2 -->
             <div class="product">
-                <img src="GS5-TV-2.jpeg" alt="GS5 TV" onclick="openModal('modal2')">
-                <h2>GS5 TV</h2>
-                <p>de GS5 komt met veel games er op 
-                het is een 8 bit consol 
-                er zitten geen hdmi kabels aan 
-                je krijgt een twee controle en een av kabels er bij</p>
-                <p>30 fbs
-                8 bit
-                2 controlers
-                1 av kabel</p>
-                <p>Prijs: $30</p>
+                <img src="GS5-TV-2.jpg" alt="GS5 TV 2" onclick="openModal('modal2')">
+                <h2>GS5 TV 2</h2>
+                <p>Hoogwaardige televisie met 4K HDR-scherm.</p>
+                <p>65-inch, Smart TV, 120 Hz, Dolby Atmos</p>
+                <p>Prijs: $1200</p>
                 <p>ID: 2</p>
-                <a href="https://forms.gle/NyoMFnv3uxMXoC9ZA" class="buy-btn" id="buyBtn2">Kopen</a>
+                <a href="https://forms.gle/NyoMFnv3uxMXoC9ZA" class="buy-btn">Kopen</a>
             </div>
         </div>
     </div>
@@ -194,40 +169,21 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modal2')">&times;</span>
             <h2>GS5 TV 2</h2>
-            <img src="GS5-TV-2.jpeg" alt="GS5 TV">
-            <img src="GS5-TV.jpeg" alt="GS5 TV">
-            <p>Prijs: $30</p>
+            <img src="GS5-TV-2.jpg" alt="GS5 TV 2">
+            <img src="GS5-TV.jpg" alt="GS5 TV">
+            <p>65-inch, Smart TV, 120 Hz, Dolby Atmos</p>
+            <p>Prijs: $1200</p>
         </div>
     </div>
 
     <script>
         function openModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.add('show');
+            document.getElementById(id).style.display = 'block';
         }
 
         function closeModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.remove('show');
+            document.getElementById(id).style.display = 'none';
         }
-
-        // Knipperend effect aanpassen op muisafstand
-        document.addEventListener('mousemove', (event) => {
-            const buyBtns = document.querySelectorAll('.buy-btn');
-            buyBtns.forEach((btn) => {
-                const rect = btn.getBoundingClientRect();
-                const dist = Math.hypot(
-                    event.clientX - (rect.left + rect.width / 2),
-                    event.clientY - (rect.top + rect.height / 2)
-                );
-                if (dist < 200) {
-                    btn.style.animationDuration = `${Math.max(0.2, dist / 100)}s`;
-                    btn.classList.add('blinking');
-                } else {
-                    btn.classList.remove('blinking');
-                }
-            });
-        });
     </script>
 
 </body>
